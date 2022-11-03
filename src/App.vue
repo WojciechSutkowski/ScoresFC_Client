@@ -1,25 +1,29 @@
 <template>
-  <HelloWorld msg="Welcome to Your Vue.js App" />
+  <!-- <i> "{{ result.data }}" </i> -->
+  <!-- <div>
+    <router-link to="/">Home</router-link>
+    <router-link :to="{ name: 'Sign In' }">Sign In</router-link>
+  </div> -->
+  <router-view />
 </template>
 
 <script>
-import HelloWorld from "./components/HelloWorld.vue";
+// import axios from "axios";
+// import { ref } from "vue";
 
 export default {
-  name: "App",
-  components: {
-    HelloWorld,
-  },
+  ////////////////////////////
+  // setup() {
+  //   const result = ref();
+  //   axios
+  //     .get("http://localhost:5001/venue/21")
+  //     .then((data) => (result.value = data));
+  //   return { result };
+  // },
+  ////////////////////////////
+
+  components: {},
 };
 </script>
 
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>
+<style lang="scss" src="./main.scss" />
