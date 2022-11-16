@@ -87,9 +87,15 @@ html {
   font-family: "Rubik", sans-serif;
   line-height: 1;
   font-weight: 400;
-  text-align: center;
+  min-height: 100vh;
+  position: relative;
 }
 
 body {
   background-color: var(--dm-color-primary);
+}
+
+footer {
+  position: absolute;
+  bottom: 0;
 }

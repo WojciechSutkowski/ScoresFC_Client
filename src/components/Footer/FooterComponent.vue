@@ -10,8 +10,8 @@
       <nav class="nav-col">
         <p class="footer-heading">Account</p>
         <ul class="footer-nav">
-          <li><a class="footer-link" href="#">Sign Up</a></li>
-          <li><a class="footer-link" href="#">Sign In</a></li>
+          <li><a class="footer-link" href="/signup">Sign Up</a></li>
+          <li><a class="footer-link" href="/signin">Sign In</a></li>
         </ul>
       </nav>
 

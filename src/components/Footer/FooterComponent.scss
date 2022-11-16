@@ -2,11 +2,11 @@
   padding: 2.4rem 32rem 2.4rem;
   width: 100%;
   background-color: var(--color-accent-dark);
-  position: relative;
+  text-align: center;
 
   &__grid {
     display: grid;
-    row-gap: 2.4rem;
+    row-gap: 1.2rem;
     column-gap: 6.4rem;
     grid-template-columns: 1.5fr 1.5fr 1.5fr;
     grid-template-rows: 1fr auto;

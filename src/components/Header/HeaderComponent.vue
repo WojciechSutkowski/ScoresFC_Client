@@ -7,26 +7,32 @@
         alt="logo"
       />
     </router-link>
-    <div>
-      <input type="text" class="header__search" placeholder="Search..." />
+
+    <input type="text" class="header__search" placeholder="Search..." />
+
+    <button class="header__button" hidden>Comparator</button>
+
+    <button class="header__button" @click="handleBtnClick">Sign In</button>
+
+    <div class="header__dropdown" hidden>
+      <div>Username</div>
+      <ul class="hide">
+        <li>Profile</li>
+        <li>Settings</li>
+      </ul>
     </div>
-    <button type="primary" class="header__button" @click="handleBtnClick">
-      Sign In
-    </button>
-    <nav class="header__nav row">
-      <button
-        type="primary"
-        class="header__nav__button header__nav__button--active"
-      >
-        Favourites
-      </button>
-      <button type="primary" class="header__nav__button">World</button>
-      <button type="primary" class="header__nav__button">Europe</button>
-      <button type="primary" class="header__nav__button">North America</button>
-      <button type="primary" class="header__nav__button">South America</button>
-      <button type="primary" class="header__nav__button">Africa</button>
-      <button type="primary" class="header__nav__button">Asia</button>
-      <button type="primary" class="header__nav__button">Oceania</button>
+
+    <nav class="header__nav">
+      <ul class="header__nav__list">
+        <li class="header__nav__item header__nav__item--active">Favourites</li>
+        <li class="header__nav__item">World</li>
+        <li class="header__nav__item">Europe</li>
+        <li class="header__nav__item">North America</li>
+        <li class="header__nav__item">South America</li>
+        <li class="header__nav__item">Africa</li>
+        <li class="header__nav__item">Asia</li>
+        <li class="header__nav__item">Oceania</li>
+      </ul>
     </nav>
   </header>
 </template>

@@ -1,5 +1,9 @@
 .container {
   height: 1000px;
   width: 600px;
-  background-color: var(--color-accent-light);
+  background-color: var(--dm-color-dark);
+}
+
+input {
+  width: 100px;
 }
