@@ -30,6 +30,7 @@
 <script>
 import axios from "axios";
 import router from "../../router/index";
+import AuthStore from "@/store/AuthStore";
 export default {
   components: {},
   setup() {
@@ -48,6 +49,7 @@ export default {
         (res) => {
           if (res.status == "200") {
             console.log("Signed in correctly");
+            AuthStore.commit("setUserIsAuthenticated", true);
             router.replace("/");
           }
         },

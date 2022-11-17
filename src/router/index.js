@@ -3,6 +3,7 @@ import Home from "../views/Home/HomeView.vue";
 import SignIn from "../views/SignIn/SignInView.vue";
 import SignUp from "../views/SignUp/SignUpView.vue";
 import Profile from "../views/Profile/ProfileView.vue";
+import AuthStore from "@/store/AuthStore";
 
 const routes = [
   {
@@ -34,7 +35,12 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  let authCheck = true;
+  let authCheck = false;
+
+  if (authCheck) {
+    AuthStore.commit("setUserIsAuthenticated", true);
+  }
+
   if (to.matched.some((record) => record.meta.requiresAuth)) {
     if (authCheck) {
       next();

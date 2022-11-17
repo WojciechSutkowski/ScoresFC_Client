@@ -10,15 +10,28 @@
 
     <input type="text" class="header__search" placeholder="Search..." />
 
-    <button class="header__button" hidden>Comparator</button>
+    <button class="header__button" v-if="this.$store.state.userIsAuthorized">
+      Comparator
+    </button>
 
-    <button class="header__button" @click="handleBtnClick">Sign In</button>
+    <button
+      class="header__button"
+      @click="handleBtnClick"
+      v-if="!this.$store.state.userIsAuthorized"
+    >
+      Sign In
+    </button>
 
-    <div class="header__dropdown" hidden>
+    <div
+      class="header__dropdown"
+      @click="handleProfileClick"
+      v-if="this.$store.state.userIsAuthorized"
+    >
       <div>Username</div>
-      <ul class="hide">
+      <ul class="dropdown_list">
         <li>Profile</li>
         <li>Settings</li>
+        <li><button>Logout</button></li>
       </ul>
     </div>
 
@@ -39,11 +52,18 @@
 
 <script>
 import { useRouter } from "vue-router";
+
 export default {
   setup() {
     const router = useRouter();
     const handleBtnClick = () => router.push("/signin");
-    return { handleBtnClick };
+
+    function handleProfileClick() {
+      const profileList = document.getElementsByClassName("dropdown_list")[0];
+
+      profileList.style.visibility = "visible";
+    }
+    return { handleBtnClick, handleProfileClick };
   },
 };
 </script>

@@ -64,9 +64,10 @@
         border-bottom-right-radius: 0;
       }
 
-      &:hover + .hide {
-        display: block;
-      }
+      // &:hover + .hide {
+      //   // display: block;
+      //   visibility: hidden;
+      // }
     }
 
     ul {
@@ -121,4 +122,8 @@
       }
     }
   }
+}
+
+.dropdown_list {
+  visibility: hidden;
 }
