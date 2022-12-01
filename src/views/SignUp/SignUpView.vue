@@ -37,6 +37,7 @@
 
 <script>
 import axios from "axios";
+import router from "@/router/index";
 export default {
   components: {},
   setup() {
@@ -59,8 +60,13 @@ export default {
 
       axios.post("http://localhost:5000/users/signup-user", newUser).then(
         (res) => {
-          if (res.status == "200") {
+          if (res.status == "201") {
             console.log("Signed up correctly");
+            router.push({ path: "/" });
+            setTimeout(() => {
+              location.reload();
+            }, 500);
+            alert("Zarejestrowano");
           }
         },
         (err) => {

@@ -7,21 +7,22 @@
         src="@/assets/logo/full/Full_v1.svg"
       />
 
-      <nav class="nav-col">
-        <p class="footer-heading">Account</p>
-        <ul class="footer-nav">
-          <li><a class="footer-link" href="/signup">Sign Up</a></li>
-          <li><a class="footer-link" href="/signin">Sign In</a></li>
+      <nav>
+        <p class="footer__nav-header">Account</p>
+        <ul class="footer__nav-list">
+          <li><a class="footer__nav-link" href="/signup">Sign Up</a></li>
+          <li><a class="footer__nav-link" href="/signin">Sign In</a></li>
+          <li><a class="footer__nav-link" href="/signin-admin">Admin</a></li>
         </ul>
       </nav>
 
-      <nav class="nav-col">
-        <p class="footer-heading">About us</p>
-        <ul class="footer-nav">
-          <li><a class="footer-link" href="#">Few words about us</a></li>
+      <nav>
+        <p class="footer__nav-header">About us</p>
+        <ul class="footer__nav-list">
+          <li><a class="footer__nav-link" href="#">Few words about us</a></li>
           <li>
             <a
-              class="footer-link"
+              class="footer__nav-link"
               href="https://psychologia.edu.pl/component/content/article/1-latest-news/1303-telefon-zaufania-801-889-880.html"
               >Help with addiction</a
             >
@@ -29,7 +30,7 @@
         </ul>
       </nav>
 
-      <p class="copyright">
+      <p class="footer__copyright">
         Copyright &copy; <span class="year">2023</span> &#124; Wojciech
         Sutkowski &#124; All rights reserved.
       </p>
@@ -41,4 +42,4 @@
 export default {};
 </script>
 
-<style lang="scss" src="./FooterComponent.scss" />
+<style lang="scss" src="./FooterComponent.scss" scoped />

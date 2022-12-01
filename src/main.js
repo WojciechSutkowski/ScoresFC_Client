@@ -1,6 +1,6 @@
 import { createApp } from "vue";
 import App from "./App.vue";
 import router from "./router";
-import AuthStore from "./store/AuthStore";
+import Store from "./store/Store";
 
-createApp(App).use(router).use(AuthStore).mount("#app");
+createApp(App).use(router).use(Store).mount("#app");

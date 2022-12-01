@@ -1,6 +1,6 @@
 <template>
   <header-component></header-component>
-  <div class="main-container" style="font-size: 4rem">{{ username }}</div>
+  <div class="main-container" style="font-size: 4rem">NOT FOUND 404</div>
   <footer-component></footer-component>
 </template>
 
@@ -8,13 +8,6 @@
 import HeaderComponent from "@/components/Header/HeaderComponent.vue";
 import FooterComponent from "@/components/Footer/FooterComponent.vue";
 export default {
-  setup() {
-    const token = localStorage.getItem("token");
-    const parsedToken = JSON.parse(token);
-    const username = parsedToken.token.username;
-
-    return { username };
-  },
   components: {
     HeaderComponent,
     FooterComponent,
@@ -22,4 +15,4 @@ export default {
 };
 </script>
 
-<style lang="scss" src="./ProfileView.scss"></style>
+<style lang="scss"></style>

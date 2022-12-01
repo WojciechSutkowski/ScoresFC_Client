@@ -1,13 +1,12 @@
 <template>
   <div
-    class="container"
     id="wg-api-football-game"
     data-host="v3.football.api-sports.io"
     :data-key="key"
-    data-id="718243"
-    data-theme=""
+    data-id=""
+    data-theme="dark"
     data-refresh="1500"
-    data-show-errors="true"
+    data-show-errors="false"
     data-show-logos="true"
   ></div>
 </template>
@@ -22,4 +21,4 @@ export default {
 };
 </script>
 
-<style lang="scss" src="./GameDetailsComponent.scss" scoped />
+<style lang="scss" src="./GameWidgetComponent.scss" scoped />
