@@ -16,6 +16,7 @@
   &__logo {
     max-width: 300px;
     width: 100%;
+    cursor: pointer;
   }
 
   &__search {
@@ -140,6 +141,12 @@
     a:active {
       color: var(--color-accent-light);
     }
+
+    &__item:hover {
+      .dropdown_list {
+        display: inline-grid;
+      }
+    }
   }
 }
 
@@ -152,16 +159,18 @@
   margin-left: auto;
   margin-right: auto;
   list-style: none;
-  display: inline-grid;
+  display: none;
+  // display: inline-grid;
   justify-content: center;
 
-  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
-  max-width: 90rem;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
+  max-width: 120rem;
 }
 
 .dropdown_profile {
   margin-top: 1rem;
   position: relative;
+  z-index: 1000;
 
   a {
     text-decoration: none;
@@ -184,6 +193,6 @@
 .dropdown_countries {
   border: solid 1px var(--color-accent-dark);
   padding: 1.2rem;
-  width: 18rem;
+  max-width: 20rem;
   background-color: var(--dm-color-dark);
 }

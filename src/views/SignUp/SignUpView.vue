@@ -1,8 +1,5 @@
 <template>
-  <router-link to="/">
-    <img class="logo" src="@/assets/logo/full/Full_v1.svg" alt="logo" />
-  </router-link>
-  <div class="signup">
+  <div class="main-container signup">
     <form class="signup__form">
       <h1>Sign up to continue</h1>
       <input
@@ -36,44 +33,45 @@
 </template>
 
 <script>
-import axios from "axios";
-import router from "@/router/index";
+import axios from 'axios';
+import router from '@/router/index';
+import { ref } from 'vue';
 export default {
-  components: {},
   setup() {
-    const firstname = "";
-    const lastname = "";
-    const email = "";
-    const username = "";
-    const password = "";
+    const firstname = ref('');
+    const lastname = ref('');
+    const email = ref('');
+    const username = ref('');
+    const password = ref('');
 
-    function signup(e) {
+    const signup = (e) => {
       e.preventDefault();
 
       let newUser = {
-        firstname: this.firstname,
-        lastname: this.lastname,
-        email: this.email,
-        username: this.username,
-        password: this.password,
+        firstname: firstname.value,
+        lastname: lastname.value,
+        email: email.value,
+        username: username.value,
+        password: password.value,
       };
 
-      axios.post("http://localhost:5000/users/signup-user", newUser).then(
+      axios.post('http://localhost:5000/users/signup-user', newUser).then(
         (res) => {
-          if (res.status == "201") {
-            console.log("Signed up correctly");
-            router.push({ path: "/" });
+          if (res.status == '201') {
+            console.log('Signed up correctly');
+            router.push({ path: '/' });
             setTimeout(() => {
               location.reload();
             }, 500);
-            alert("Zarejestrowano");
+            alert('Zarejestrowano');
           }
         },
         (err) => {
+          console.log(newUser);
           console.log(err.response);
         }
       );
-    }
+    };
 
     return { firstname, lastname, email, username, password, signup };
   },

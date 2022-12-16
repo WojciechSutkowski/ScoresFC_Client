@@ -1,18 +1,13 @@
 <template>
   <header class="header">
-    <router-link to="/">
-      <img
-        class="header__logo"
-        src="@/assets/logo/full/Full_v1.svg"
-        alt="logo"
-      />
-    </router-link>
+    <img
+      class="header__logo"
+      src="@/assets/logo/full/Full_v1.svg"
+      alt="logo"
+      @click="handleLogoClick"
+    />
 
     <input type="text" class="header__search" placeholder="Search..." />
-
-    <button class="header__button" v-if="this.$store.state.userIsAuthorized">
-      Comparator
-    </button>
 
     <button
       class="header__button"
@@ -62,7 +57,7 @@
         <router-link
           :to="{
             name: 'Country leagues',
-            params: { country: AllContinents[0] },
+            params: { country: allContinents[0] },
           }"
         >
           <li class="header__nav__item">World</li>
@@ -70,14 +65,14 @@
 
         <!-- EUROPE -->
         <li class="header__nav__item">
-          <p @click="isEuDropdownOpen = !isEuDropdownOpen">Europe</p>
-          <ul class="dropdown_list" v-if="isEuDropdownOpen">
+          <p>Europe</p>
+          <ul class="dropdown_list">
             <router-link
               :to="{
                 name: 'Country leagues',
                 params: { country: country },
               }"
-              v-for="(country, index) in AllContinents[3]"
+              v-for="(country, index) in allContinents[3]"
               :key="index"
             >
               <li class="dropdown_countries">
@@ -89,14 +84,14 @@
 
         <!-- NORTH AMERICA -->
         <li class="header__nav__item">
-          <p @click="isNaDropdownOpen = !isNaDropdownOpen">North America</p>
-          <ul class="dropdown_list" v-if="isNaDropdownOpen">
+          <p>North America</p>
+          <ul class="dropdown_list">
             <router-link
               :to="{
                 name: 'Country leagues',
                 params: { country: country },
               }"
-              v-for="(country, index) in AllContinents[4]"
+              v-for="(country, index) in allContinents[4]"
               :key="index"
             >
               <li class="dropdown_countries">
@@ -108,14 +103,14 @@
 
         <!-- SOUTH AMERICA -->
         <li class="header__nav__item">
-          <p @click="isSaDropdownOpen = !isSaDropdownOpen">South America</p>
-          <ul class="dropdown_list" v-if="isSaDropdownOpen">
+          <p>South America</p>
+          <ul class="dropdown_list">
             <router-link
               :to="{
                 name: 'Country leagues',
                 params: { country: country },
               }"
-              v-for="(country, index) in AllContinents[5]"
+              v-for="(country, index) in allContinents[5]"
               :key="index"
             >
               <li class="dropdown_countries">
@@ -127,14 +122,14 @@
 
         <!-- AFRICA -->
         <li class="header__nav__item">
-          <p @click="isAfDropdownOpen = !isAfDropdownOpen">Africa</p>
-          <ul class="dropdown_list" v-if="isAfDropdownOpen">
+          <p>Africa</p>
+          <ul class="dropdown_list">
             <router-link
               :to="{
                 name: 'Country leagues',
                 params: { country: country },
               }"
-              v-for="(country, index) in AllContinents[1]"
+              v-for="(country, index) in allContinents[1]"
               :key="index"
             >
               <li class="dropdown_countries">
@@ -146,33 +141,14 @@
 
         <!-- ASIA -->
         <li class="header__nav__item">
-          <p @click="isAsDropdownOpen = !isAsDropdownOpen">Asia</p>
-          <ul class="dropdown_list" v-if="isAsDropdownOpen">
+          <p>Asia & Oceania</p>
+          <ul class="dropdown_list">
             <router-link
               :to="{
                 name: 'Country leagues',
                 params: { country: country },
               }"
-              v-for="(country, index) in AllContinents[2]"
-              :key="index"
-            >
-              <li class="dropdown_countries">
-                {{ country }}
-              </li>
-            </router-link>
-          </ul>
-        </li>
-
-        <!-- OCEANIA -->
-        <li class="header__nav__item">
-          <p @click="isAnyContinentOpen = !isAnyContinentOpen">Oceania</p>
-          <ul class="dropdown_list" v-if="isAnyContinentOpen">
-            <router-link
-              :to="{
-                name: 'Country leagues',
-                params: { country: country },
-              }"
-              v-for="(country, index) in AllContinents[6]"
+              v-for="(country, index) in allContinents[2]"
               :key="index"
             >
               <li class="dropdown_countries">
@@ -187,61 +163,50 @@
 </template>
 
 <script>
-import { ref } from "vue";
-import { useRouter } from "vue-router";
-import { AllContinents } from "@/data/Continents";
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
+import { allContinents } from '@/data/index';
 
 export default {
   setup() {
+    console.log(allContinents);
     const router = useRouter();
 
-    const isEuDropdownOpen = ref(false);
-    const isNaDropdownOpen = ref(false);
-    const isSaDropdownOpen = ref(false);
-    const isAsDropdownOpen = ref(false);
-    const isAfDropdownOpen = ref(false);
-    // const isOcDropdownOpen = ref(false);
     const isProfileDropdownOpen = ref(false);
     const isProfileClicked = ref(false);
-    const isAnyContinentOpen = ref(false);
 
-    console.log(AllContinents);
+    const username = localStorage.getItem('username');
 
-    // const token = localStorage.getItem("token");
-    // const parsedToken = JSON.parse(token);
-    // const username = parsedToken.token.username;
-
-    const username = localStorage.getItem("username");
-
-    const handleBtnClick = () => router.push("/signin");
-
-    function handleProfileClick() {
-      const profileList = document.getElementsByClassName("dropdown_list")[0];
-
-      profileList.style.visibility = "visible";
+    function handleLogoClick() {
+      router.push('/');
+      setTimeout(() => {
+        location.reload();
+      }, 500);
     }
 
-    function handleLogoutClick() {
+    const handleBtnClick = () => router.push('/signin');
+
+    const handleProfileClick = () => {
+      const profileList = document.querySelectorAll('dropdown_list')[0];
+
+      profileList.style.visibility = 'visible';
+    };
+
+    const handleLogoutClick = () => {
       // localStorage.removeItem("token");
       localStorage.clear();
-      router.go("/");
-    }
+      router.go('/');
+    };
 
     return {
       handleBtnClick,
       handleProfileClick,
       handleLogoutClick,
       username,
-      isEuDropdownOpen,
-      isNaDropdownOpen,
-      isSaDropdownOpen,
-      isAsDropdownOpen,
-      isAfDropdownOpen,
-      // isOcDropdownOpen,
       isProfileDropdownOpen,
       isProfileClicked,
-      isAnyContinentOpen,
-      AllContinents,
+      allContinents,
+      handleLogoClick,
     };
   },
 };

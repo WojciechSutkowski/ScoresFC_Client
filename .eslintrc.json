@@ -1,0 +1,20 @@
+{
+  "root": true,
+  "env": {
+    "browser": true,
+    "node": true
+  },
+  "extends": ["plugin:vue/vue3-essential", "eslint:recommended"],
+  "parserOptions": {
+    "ecmaVersion": 2020
+  },
+  "rules": {
+    "max-lines-per-function": [
+      2,
+      {
+        "max": 220
+      }
+    ],
+    "quotes": ["error", "single"]
+  }
+}

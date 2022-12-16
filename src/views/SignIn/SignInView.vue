@@ -1,8 +1,5 @@
 <template>
-  <router-link to="/">
-    <img class="logo" src="@/assets/logo/full/Full_v1.svg" alt="logo" />
-  </router-link>
-  <div class="signin">
+  <div class="main-container signin">
     <form class="signin__form">
       <h1>Sign in to continue</h1>
       <input type="text" placeholder="Username" v-model="username" required />
@@ -28,37 +25,37 @@
 </template>
 
 <script>
-import axios from "axios";
-import router from "@/router/index";
-import Store from "@/store/Store";
+import axios from 'axios';
+import router from '@/router/index';
+import Store from '@/store/Store';
+import { ref } from 'vue';
 export default {
-  components: {},
   setup() {
-    const username = "";
-    const password = "";
+    const username = ref('');
+    const password = ref('');
 
     function signin(e) {
       e.preventDefault();
 
       let checkUser = {
-        username: this.username,
-        password: this.password,
+        username: username.value,
+        password: password.value,
       };
 
-      if (window.location.href === "http://localhost:8080/signin") {
-        axios.post("http://localhost:5000/users/signin-user", checkUser).then(
+      if (window.location.href === 'http://localhost:8080/signin') {
+        axios.post('http://localhost:5000/users/signin-user', checkUser).then(
           (res) => {
-            if (res.status == "200") {
-              console.log("Signed in correctly");
-              Store.commit("setUserIsAuthenticated", true);
+            if (res.status == '200') {
+              console.log('Signed in correctly');
+              Store.commit('setUserIsAuthenticated', true);
               const token = {
                 username: res.data.username,
                 auth: true,
               };
-              localStorage.setItem("token", JSON.stringify({ token }));
-              localStorage.setItem("username", res.data.username);
-              localStorage.setItem("auth", true);
-              router.push({ path: "/" });
+              localStorage.setItem('token', JSON.stringify({ token }));
+              localStorage.setItem('username', res.data.username);
+              localStorage.setItem('auth', true);
+              router.push({ path: '/' });
               setTimeout(() => {
                 location.reload();
               }, 500);
@@ -69,19 +66,19 @@ export default {
           }
         );
       } else {
-        axios.post("http://localhost:5000/users/signin-admin", checkUser).then(
+        axios.post('http://localhost:5000/users/signin-admin', checkUser).then(
           (res) => {
-            if (res.status == "200") {
-              console.log("Signed in correctly");
-              Store.commit("setUserIsAuthenticated", true);
+            if (res.status == '200') {
+              console.log('Signed in correctly');
+              Store.commit('setUserIsAuthenticated', true);
               const token = {
                 username: res.data.username,
                 auth: true,
               };
-              localStorage.setItem("token", JSON.stringify({ token }));
-              localStorage.setItem("username", res.data.username);
-              localStorage.setItem("auth", true);
-              router.push({ path: "/" });
+              localStorage.setItem('token', JSON.stringify({ token }));
+              localStorage.setItem('username', res.data.username);
+              localStorage.setItem('auth', true);
+              router.push({ path: '/' });
               setTimeout(() => {
                 location.reload();
               }, 500);

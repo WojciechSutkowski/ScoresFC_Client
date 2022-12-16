@@ -1,0 +1,32 @@
+.league__header {
+  background-color: green;
+  display: flex;
+}
+
+.league__info {
+  display: grid;
+  grid-template-columns: 1fr 4fr;
+  grid-template-rows: 1fr;
+}
+
+.league__logo {
+  width: 12rem;
+  padding: 1rem;
+  background-color: white;
+}
+
+.league__country {
+  display: flex;
+
+  &__flag {
+    width: 4rem;
+  }
+}
+
+.league__season {
+  display: flex;
+
+  p {
+    font-size: 2rem;
+  }
+}

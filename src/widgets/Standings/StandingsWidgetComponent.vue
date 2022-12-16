@@ -1,18 +1,20 @@
 <template>
   <div
-    id="wg-api-football-game"
+    id="wg-api-football-standings"
     data-host="v3.football.api-sports.io"
     :data-key="key"
-    data-id=""
-    data-theme="dark"
-    data-refresh="1500"
+    data-league=""
+    data-team=""
+    data-season=""
+    data-theme=""
     data-show-errors="false"
     data-show-logos="true"
+    class="wg_loader"
   ></div>
 </template>
 
 <script>
-import { ref } from "vue";
+import { ref } from 'vue';
 export default {
   setup() {
     const key = ref(process.env.VUE_APP_API_KEY);
@@ -21,4 +23,4 @@ export default {
 };
 </script>
 
-<style lang="scss" src="./GameWidgetComponent.scss" scoped />
+<style lang="scss" src="./StandingsWidgetComponent.scss" scoped />

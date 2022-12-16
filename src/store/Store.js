@@ -1,5 +1,5 @@
-import { createStore } from "vuex";
-import axios from "axios";
+import { createStore } from 'vuex';
+import axios from 'axios';
 
 export default createStore({
   state: {
@@ -23,9 +23,9 @@ export default createStore({
     async getFavourites(context) {
       try {
         const params = {
-          username: localStorage.getItem("username"),
+          username: localStorage.getItem('username'),
         };
-        const res = await axios.get("http://localhost:5000/users/favourites", {
+        const res = await axios.get('http://localhost:5000/users/favourites', {
           params,
         });
         const replacement = {
@@ -33,7 +33,7 @@ export default createStore({
           games: res.data.favouriteGames,
           teams: res.data.favouriteTeams,
         };
-        context.commit("setFavourites", replacement);
+        context.commit('setFavourites', replacement);
       } catch (err) {
         console.log(err);
       }

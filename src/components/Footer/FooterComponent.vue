@@ -38,8 +38,4 @@
   </footer>
 </template>
 
-<script>
-export default {};
-</script>
-
 <style lang="scss" src="./FooterComponent.scss" scoped />

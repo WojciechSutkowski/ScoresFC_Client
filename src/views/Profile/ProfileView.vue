@@ -1,23 +1,15 @@
 <template>
-  <header-component></header-component>
   <div class="main-container" style="font-size: 4rem">{{ username }}</div>
-  <footer-component></footer-component>
 </template>
 
 <script>
-import HeaderComponent from "@/components/Header/HeaderComponent.vue";
-import FooterComponent from "@/components/Footer/FooterComponent.vue";
 export default {
   setup() {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem('token');
     const parsedToken = JSON.parse(token);
     const username = parsedToken.token.username;
 
     return { username };
-  },
-  components: {
-    HeaderComponent,
-    FooterComponent,
   },
 };
 </script>
