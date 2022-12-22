@@ -4,23 +4,34 @@
       class="header__logo"
       src="@/assets/logo/full/Full_v1.svg"
       alt="logo"
-      @click="handleLogoClick"
+      @click="handleLogo"
     />
 
-    <input type="text" class="header__search" placeholder="Search..." />
+    <div class="header__search">
+      <input
+        @keyup="handleSearch"
+        type="search"
+        class="header__search search__input"
+        placeholder="Search..."
+      />
+      <select class="header__search search__type">
+        <option value="team">Team</option>
+        <option value="league">League</option>
+      </select>
+    </div>
 
     <button
       class="header__button"
-      @click="handleBtnClick"
-      v-if="!this.$store.state.userIsAuthorized"
+      @click="handleLogin"
+      v-if="!store._state.data.auth.userIsAuthorized"
     >
-      Sign In
+      Login
     </button>
 
     <div
       class="header__profile"
-      @click="handleProfileClick"
-      v-if="this.$store.state.userIsAuthorized"
+      @click="handleProfile"
+      v-if="store._state.data.auth.userIsAuthorized"
     >
       <div
         @click="isProfileDropdownOpen = !isProfileDropdownOpen"
@@ -36,10 +47,7 @@
           <router-link to="/profile"><p>Profile</p></router-link>
         </li>
         <li>
-          <router-link to="/"><p>Settings</p></router-link>
-        </li>
-        <li>
-          <p @click="handleLogoutClick">Logout</p>
+          <p @click="handleLogout">Logout</p>
         </li>
       </ul>
     </div>
@@ -47,7 +55,7 @@
     <nav class="header__nav">
       <ul class="header__nav__list">
         <!-- FAVOURITES -->
-        <router-link to="/">
+        <router-link to="/favourites">
           <li class="header__nav__item header__nav__item--active">
             Favourites
           </li>
@@ -165,11 +173,12 @@
 <script>
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
+// import router from '@/router';
 import { allContinents } from '@/data/index';
+import store from '@/store/index';
 
 export default {
   setup() {
-    console.log(allContinents);
     const router = useRouter();
 
     const isProfileDropdownOpen = ref(false);
@@ -177,36 +186,48 @@ export default {
 
     const username = localStorage.getItem('username');
 
-    function handleLogoClick() {
-      router.push('/');
-      setTimeout(() => {
-        location.reload();
-      }, 500);
-    }
+    const handleLogo = () => router.push('/');
 
-    const handleBtnClick = () => router.push('/signin');
+    const handleLogin = () => router.push('/login');
 
-    const handleProfileClick = () => {
+    const handleProfile = () => {
       const profileList = document.querySelectorAll('dropdown_list')[0];
-
       profileList.style.visibility = 'visible';
     };
 
-    const handleLogoutClick = () => {
-      // localStorage.removeItem("token");
+    const handleLogout = () => {
       localStorage.clear();
       router.go('/');
     };
 
+    const handleSearch = (event) => {
+      if (event.code === 'Enter') {
+        event.preventDefault();
+        const input = document.querySelector('.search__input');
+        const type = document.querySelector('.search__type');
+        console.log(input.value);
+        console.log(type.value);
+        localStorage.setItem('search', input.value);
+        router.push({
+          name: 'Search results',
+          params: {
+            type: type.value,
+          },
+        });
+      }
+    };
+
     return {
-      handleBtnClick,
-      handleProfileClick,
-      handleLogoutClick,
+      handleLogin,
+      handleProfile,
+      handleLogout,
       username,
       isProfileDropdownOpen,
       isProfileClicked,
       allContinents,
-      handleLogoClick,
+      handleLogo,
+      handleSearch,
+      store,
     };
   },
 };

@@ -37,7 +37,6 @@ export default {
       (res) => {
         if (res.status == '200') {
           for (let i = 0; i < res.data.length; i++) {
-            console.log(res.data[i].league.name);
             state.leagues[i] = {
               leagueName: res.data[i].league.name,
             };
@@ -67,9 +66,9 @@ export default {
         },
       });
 
-      setTimeout(() => {
-        location.reload();
-      }, 500);
+      // setTimeout(() => {
+      //   location.reload();
+      // }, 500);
     }
     // window.location.reload();
 

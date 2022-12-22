@@ -10,9 +10,9 @@
       <nav>
         <p class="footer__nav-header">Account</p>
         <ul class="footer__nav-list">
-          <li><a class="footer__nav-link" href="/signup">Sign Up</a></li>
-          <li><a class="footer__nav-link" href="/signin">Sign In</a></li>
-          <li><a class="footer__nav-link" href="/signin-admin">Admin</a></li>
+          <li><a class="footer__nav-link" href="/register">Register</a></li>
+          <li><a class="footer__nav-link" href="/login">Login</a></li>
+          <li><a class="footer__nav-link" href="/login-admin">Admin</a></li>
         </ul>
       </nav>
 

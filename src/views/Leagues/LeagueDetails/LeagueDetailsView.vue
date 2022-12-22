@@ -2,12 +2,12 @@
   <div
     class="main-container"
     style="font-size: 4rem"
-    v-for="response in headings"
+    v-for="response in details"
     :key="response"
   >
     <header class="league__header">
       <div class="league__info">
-        <img class="league__logo" :src="response.league.logo" />
+        <!-- <img class="league__logo" :src="response.league.logo" /> -->
         <div>
           <p>
             {{ response.league.name }}
@@ -34,64 +34,90 @@
       </div>
     </header>
 
-    <standings-widget-component
+    {{ leagues }}
+    {{ $store.state.league }}
+
+    <standings-widget
       v-for="season in response.seasons"
       class="center widget-80"
       :key="season"
       :data-league="response.league.id"
       :data-season="season.year"
-    ></standings-widget-component>
+    ></standings-widget>
+    <p>halo</p>
   </div>
 </template>
 
 <script>
-import StandingsWidgetComponent from '@/widgets/Standings/StandingsWidgetComponent.vue';
-import { useRoute } from 'vue-router';
-import { reactive, toRefs } from 'vue';
-import axios from 'axios';
+import StandingsWidget from '@/widgets/Standings/StandingsWidget.vue';
+// import { useRoute } from 'vue-router';
+// import { reactive, toRefs } from 'vue';
+import { onBeforeMount, computed } from 'vue';
+// import axios from 'axios';
+import store from '@/store/index';
 
 export default {
   setup() {
-    const route = useRoute();
-    console.log(route.params.country);
+    // console.log(useRoute());
+    console.log(store.getters);
 
-    const state = reactive({
-      headings: [],
+    const leagues = computed(() => {
+      return store.getters['leagues/league'];
     });
 
-    const params = {
-      country: route.params.country,
-      league: route.params.name,
-      current: true,
-    };
+    onBeforeMount(() => {
+      store.dispatch('leagues/getLeague');
+    });
 
-    console.log(params);
+    const details = store.getters['leagues/league'];
+    console.log(details);
 
-    axios
-      .get(`http://localhost:5000/leagues/${params.country}/${params.league}`)
-      .then(
-        (res) => {
-          if (res.status == '200') {
-            console.log(res.data);
-            for (let i = 0; i < res.data.length; i++) {
-              console.log(res.data[i]);
-              state.headings[i] = {
-                country: res.data[i].country,
-                league: res.data[i].league,
-                seasons: res.data[i].seasons[i],
-              };
-              console.log(state.headings[0].seasons);
-            }
-          }
-        },
-        (err) => {
-          console.log(err.response);
-        }
-      );
+    ///////////////////////////////////////////////////////
+    // const route = useRoute();
+    // console.log(route.params.country);
 
-    const { headings } = toRefs(state);
-    console.log(JSON.stringify(headings));
-    console.log(headings);
+    // const state = reactive({
+    //   details: [],
+    // });
+
+    // const { country, league, seasons } = details;
+    // console.log(country);
+    // console.log(league);
+    // console.log(seasons);
+
+    // const params = {
+    //   country: route.params.country,
+    //   league: route.params.name,
+    //   current: true,
+    // };
+
+    // console.log(params);
+
+    // axios
+    //   .get(`http://localhost:5000/league/${params.country}/${params.league}`)
+    //   .then(
+    //     (res) => {
+    //       if (res.status == '200') {
+    //         console.log(res.data);
+    //         for (let i = 0; i < res.data.length; i++) {
+    //           console.log(res.data[i]);
+    //           state.details[i] = {
+    //             country: res.data[i].country,
+    //             league: res.data[i].league,
+    //             seasons: res.data[i].seasons[i],
+    //           };
+    //           console.log(state.details[0].seasons);
+    //         }
+    //       }
+    //     },
+    //     (err) => {
+    //       console.log(err.response);
+    //     }
+    //   );
+
+    // const { details } = toRefs(state);
+    // console.log(JSON.stringify(details));
+    // console.log(details);
 
     // const mock = [
     //   {
@@ -134,14 +160,15 @@ export default {
     // ];
 
     return {
-      headings,
+      // details,
       // mock
+      leagues,
     };
   },
   components: {
-    StandingsWidgetComponent,
+    StandingsWidget,
   },
 };
 </script>
 
-<style lang="scss" src="./LeagueDetails.scss"></style>
+<style lang="scss" src="./LeagueDetailsView.scss"></style>

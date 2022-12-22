@@ -1,0 +1,90 @@
+.comment {
+  width: 80%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  margin-top: 1.2rem;
+
+  &__login {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--color-gray);
+    padding: 2.4rem;
+    font-size: 1.8rem;
+    width: 50%;
+  }
+
+  &__new {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+    min-height: 12.8rem;
+    width: 100%;
+    padding: 2.4rem;
+
+    &__input {
+      font-family: 'Rubik', sans-serif;
+      background-color: var(--color-gray);
+      width: 100%;
+      padding: 1.2rem;
+      min-height: 12.8rem;
+      resize: none;
+    }
+    &__btn {
+      background-color: var(--color-accent-light);
+      align-self: flex-end;
+      width: 25%;
+      min-height: 2.4em;
+    }
+  }
+
+  &__added {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2.4rem;
+
+    &__list {
+      background-color: var(--color-gray);
+      width: 100%;
+      list-style: none;
+    }
+
+    &__item {
+      background-color: var(--color-gray);
+      width: 100%;
+      min-height: 2.4rem;
+    }
+  }
+
+  &__item {
+    min-height: 4.8rem;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.8rem 1.2rem 0.8rem 1.2rem;
+    font-size: 1.2rem;
+    border-bottom: 1px solid var(--color-accent-dark);
+    word-wrap: break-word;
+
+    &__info {
+      width: 100%;
+      // font-size: 1.2rem;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      background-color: var(--lm-color-light);
+    }
+
+    &__content {
+      align-self: flex-start;
+      width: 100%;
+    }
+  }
+}

@@ -21,4 +21,4 @@ export default {
 };
 </script>
 
-<style lang="scss" src="./GameWidgetComponent.scss" scoped />
+<style lang="scss" src="./GameWidget.scss" scoped />

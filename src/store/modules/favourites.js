@@ -1,22 +1,13 @@
-import { createStore } from 'vuex';
 import axios from 'axios';
 
-export default createStore({
+export default {
+  namespaced: true,
   state: {
-    userIsAuthorized: false,
     favourites: {},
   },
   getters: {
     favourites(state) {
       return state.favourites;
-    },
-  },
-  mutations: {
-    setUserIsAuthenticated(state, replacement) {
-      state.userIsAuthorized = replacement;
-    },
-    setFavourites(state, replacement) {
-      state.favourites = replacement;
     },
   },
   actions: {
@@ -39,4 +30,9 @@ export default createStore({
       }
     },
   },
-});
+  mutations: {
+    setFavourites(state, replacement) {
+      state.favourites = replacement;
+    },
+  },
+};

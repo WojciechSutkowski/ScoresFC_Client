@@ -1,14 +1,13 @@
 <template>
   <main class="main-container">
-    <game-widget-component
-      class="center widget-80"
-      :data-id="gameId"
-    ></game-widget-component>
+    <game-widget class="center widget-80" :data-id="gameId"></game-widget>
+    <comments-component />
   </main>
 </template>
 
 <script>
-import GameWidgetComponent from '@/widgets/Game/GameWidgetComponent.vue';
+import GameWidget from '@/widgets/Game/GameWidget.vue';
+import CommentsComponent from '@/components/Comments/CommentsComponent.vue';
 import { useRoute } from 'vue-router';
 
 export default {
@@ -23,7 +22,8 @@ export default {
     };
   },
   components: {
-    GameWidgetComponent,
+    GameWidget,
+    CommentsComponent,
   },
 };
 </script>

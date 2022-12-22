@@ -23,4 +23,4 @@ export default {
 };
 </script>
 
-<style lang="scss" src="./StandingsWidgetComponent.scss" scoped />
+<style lang="scss" src="./StandingsWidget.scss" scoped />

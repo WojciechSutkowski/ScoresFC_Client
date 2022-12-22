@@ -1,12 +1,17 @@
 import Home from '../views/Home/HomeView.vue';
-import SignIn from '../views/SignIn/SignInView.vue';
-import SignUp from '../views/SignUp/SignUpView.vue';
-import Profile from '../views/Profile/ProfileView.vue';
-import LeagueSeasons from '../views/Leagues/LeagueSeasons.vue';
-import LeagueDetails from '../views/Leagues/LeagueDetails.vue';
-import CountryLeagues from '../views/Leagues/CountryLeagues.vue';
 import NotFound from '../views/NotFound/NotFoundView.vue';
-import GameDetails from '../views/Games/GameDetails.vue';
+import Login from '../views/Login/LoginView.vue';
+import Register from '../views/Register/RegisterView.vue';
+import SearchResults from '../views/Search/SearchResultsView.vue';
+import Admin from '../views/Admin/AdminView.vue';
+import Profile from '../views/Profile/ProfileView.vue';
+import Favourites from '../views/Favourites/FavouritesView.vue';
+import LeagueSeasons from '../views/Leagues/LeagueSeasons/LeagueSeasonsView.vue';
+import LeagueDetails from '../views/Leagues/LeagueDetails/LeagueDetailsView.vue';
+import CountryLeagues from '../views/Leagues/CountryLeagues/CountryLeaguesView.vue';
+import TeamDetails from '../views/Team/TeamDetailsView.vue';
+import GameDetails from '../views/Game/GameView.vue';
+import PlayerDetails from '../views/Player/PlayerDetailsView.vue';
 
 export const routes = [
   {
@@ -21,24 +26,43 @@ export const routes = [
     component: NotFound,
   },
   {
-    path: '/signin',
-    name: 'Sign In',
-    component: SignIn,
+    path: '/login',
+    name: 'Login',
+    component: Login,
   },
   {
-    path: '/signin-admin',
-    name: 'Admin Sign In',
-    component: SignIn,
+    path: '/login-admin',
+    name: 'Login admin',
+    component: Login,
   },
   {
-    path: '/signup',
-    name: 'Sign Up',
-    component: SignUp,
+    path: '/register',
+    name: 'Register',
+    component: Register,
   },
   {
-    path: '/fixture/:id',
-    name: 'Match details',
-    component: GameDetails,
+    path: '/search/:type',
+    name: 'Search results',
+    component: SearchResults,
+    props: true,
+  },
+  {
+    path: '/profile',
+    name: 'Profile',
+    component: Profile,
+    meta: { requiresAuth: true },
+  },
+  {
+    path: '/admin',
+    name: 'Admin',
+    component: Admin,
+    meta: { requiresAuth: true },
+  },
+  {
+    path: '/favourites',
+    name: 'Favourites',
+    component: Favourites,
+    meta: { requiresAuth: true },
   },
   {
     path: '/league/seasons/:id',
@@ -59,9 +83,20 @@ export const routes = [
     props: true,
   },
   {
-    path: '/profile',
-    name: 'Profile',
-    component: Profile,
-    meta: { requiresAuth: true },
+    path: '/team/:id',
+    name: 'Team details',
+    component: TeamDetails,
+    props: true,
+  },
+  {
+    path: '/fixture/:id',
+    name: 'Match details',
+    component: GameDetails,
+  },
+  {
+    path: '/player/:id',
+    name: 'Player details',
+    component: PlayerDetails,
+    props: true,
   },
 ];

@@ -1,7 +1,7 @@
 <template>
-  <div class="main-container signup">
-    <form class="signup__form">
-      <h1>Sign up to continue</h1>
+  <div class="main-container register">
+    <form class="register__form">
+      <h1>Register to continue</h1>
       <input
         type="text"
         placeholder="First name"
@@ -18,11 +18,11 @@
         required
       />
 
-      <div class="signup__buttons">
-        <button type="primary" @click="signup">Sign Up</button>
+      <div class="register__buttons">
+        <button type="primary" @click="handleRegister">Sign Up</button>
         <p>
           <span> Already have an account? </span>
-          <router-link to="/signin">Sign In</router-link>
+          <router-link to="/login">Login</router-link>
         </p>
         <p>
           <router-link to="/">Back to home page</router-link>
@@ -44,7 +44,7 @@ export default {
     const username = ref('');
     const password = ref('');
 
-    const signup = (e) => {
+    const handleRegister = (e) => {
       e.preventDefault();
 
       let newUser = {
@@ -55,7 +55,7 @@ export default {
         password: password.value,
       };
 
-      axios.post('http://localhost:5000/users/signup-user', newUser).then(
+      axios.post('http://localhost:5000/users/register-user', newUser).then(
         (res) => {
           if (res.status == '201') {
             console.log('Signed up correctly');
@@ -73,9 +73,9 @@ export default {
       );
     };
 
-    return { firstname, lastname, email, username, password, signup };
+    return { firstname, lastname, email, username, password, handleRegister };
   },
 };
 </script>
 
-<style lang="scss" src="./SignUpView.scss" scoped />
+<style lang="scss" src="./RegisterView.scss" scoped />

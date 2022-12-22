@@ -13,15 +13,13 @@
 
     <!-- <component :is="HeaderComponent" /> -->
 
-    <!-- <games-widget-component
-      class="center widget-80"
-      :data-date="date"
-    ></games-widget-component> -->
+    <games-widget class="center widget-80" :data-date="date"></games-widget>
   </main>
+  <button @click="scrollToTop" class="scrollToTop">Top</button>
 </template>
 
 <script>
-// import GamesWidgetComponent from '@/widgets/Games/GamesWidgetComponent.vue';
+import GamesWidget from '@/widgets/Games/GamesWidget.vue';
 import Datepicker from '@vuepic/vue-datepicker';
 import router from '@/router';
 import { useRoute } from 'vue-router';
@@ -33,6 +31,7 @@ import '@vuepic/vue-datepicker/dist/main.css';
 
 export default {
   setup() {
+    console.log(history.state);
     const route = useRoute();
     const date = ref(route.params.date);
 
@@ -59,28 +58,53 @@ export default {
     };
 
     const handleDate = (date) => {
-      console.log(format(date));
       router.push({
         name: 'Home',
         params: { date: format(date), format: format(date) },
       });
-      setTimeout(() => {
-        location.reload();
-      }, 500);
+      // setTimeout(() => {
+      //   location.reload();
+      // }, 500);
     };
 
-    return { date, format, handleDate, route };
-  },
-  components: {
-    // GamesWidgetComponent,
-    Datepicker,
+    const scrollBtn = document.getElementsByClassName('scrollToTop');
+    function scrollFunction() {
+      if (
+        document.body.scrollTop > 20 ||
+        document.documentElement.scrollTop > 20
+      ) {
+        scrollBtn[0].style.display = 'block';
+      } else {
+        scrollBtn[0].style.display = 'none';
+      }
+    }
+
+    window.onscroll = function () {
+      scrollFunction();
+    };
+
+    // When the user clicks on the button, scroll to the top of the document
+    function scrollToTop() {
+      console.log('clicked');
+      document.body.scrollTop = 0; // For Safari
+      document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
+    }
+
+    return { date, format, handleDate, route, scrollToTop };
   },
   beforeRouteEnter(to, from) {
-    console.log(to);
-    console.log(from);
-    if (to.name === 'Home' && to.path !== from.path) {
-      window.location = to.path;
+    if (to.path !== from.path && to.name === 'Home' && from.path !== '/') {
+      window.location.replace(to.path);
     }
+  },
+  beforeRouteUpdate(to, from) {
+    if (to.path !== from.path && to.name === 'Home') {
+      window.location.replace(to.path);
+    }
+  },
+  components: {
+    GamesWidget,
+    Datepicker,
   },
 };
 </script>
