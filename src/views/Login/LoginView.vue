@@ -27,12 +27,14 @@
 <script>
 import axios from 'axios';
 import router from '@/router/index';
-import store from '@/store/index';
+import { useAuth } from '@/store';
 import { ref } from 'vue';
 export default {
   setup() {
     const username = ref('');
     const password = ref('');
+
+    const useAuthService = useAuth();
 
     function handleLogin(e) {
       e.preventDefault();
@@ -42,14 +44,15 @@ export default {
         password: password.value,
       };
 
-      console.log(store.state);
+      // console.log(store.state);
 
       if (window.location.href === 'http://localhost:8080/login') {
         axios.post('http://localhost:5000/users/login-user', checkUser).then(
           (res) => {
             if (res.status == '200') {
               console.log('Signed in correctly');
-              store.commit('auth/setUserIsAuthenticated', true);
+              // store.commit('auth/setUserIsAuthenticated', true);
+              useAuthService.setUserIsAuthenticated(true);
               const token = {
                 username: res.data.username,
                 auth: true,
@@ -61,7 +64,7 @@ export default {
               setTimeout(() => {
                 location.reload();
               }, 500);
-              console.log(store.state);
+              // console.log(store.state);
             }
           },
           (err) => {
@@ -73,8 +76,10 @@ export default {
           (res) => {
             if (res.status == '200') {
               console.log('Signed in correctly');
-              store.commit('auth/setUserIsAuthenticated', true);
-              store.commit('auth/setAdminIsAuthenticated', true);
+              // store.commit('auth/setUserIsAuthenticated', true);
+              // store.commit('auth/setAdminIsAuthenticated', true);
+              useAuthService.setUserIsAuthenticated(true);
+              useAuthService.setAdminIsAuthenticated(true);
               const token = {
                 username: res.data.username,
                 auth: true,

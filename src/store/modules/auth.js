@@ -1,19 +1,16 @@
-export default {
-  namespaced: true,
-  state: {
+import { defineStore } from 'pinia';
+
+export const useAuth = defineStore('auth', {
+  state: () => ({
     userIsAuthorized: false,
     adminIsAuthorized: false,
-  },
-  getters: {
-    data: (state) => state.data,
-  },
-  actions: {},
-  mutations: {
-    setUserIsAuthenticated(state, replacement) {
-      state.userIsAuthorized = replacement;
+  }),
+  actions: {
+    setUserIsAuthenticated(replacement) {
+      this.userIsAuthorized = replacement;
     },
-    setAdminIsAuthenticated(state, replacement) {
-      state.adminIsAuthorized = replacement;
+    setAdminIsAuthenticated(replacement) {
+      this.adminIsAuthorized = replacement;
     },
   },
-};
+});

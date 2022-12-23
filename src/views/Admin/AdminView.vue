@@ -1,9 +1,7 @@
 <template>
   <div class="main-container">
-    <p v-if="!store._state.data.auth.adminIsAuthorized">
-      You are not allowed to admin panel
-    </p>
-    <p v-if="store._state.data.auth.adminIsAuthorized">Welcome admin</p>
+    <p v-if="!isAdmin">You are not allowed to admin panel</p>
+    <p v-if="isAdmin">Welcome admin</p>
     <ul v-for="comment in comments" :key="comment.comment">
       <li>
         <p>
@@ -16,14 +14,18 @@
 </template>
 
 <script>
-import store from '@/store/index';
-import { reactive, toRefs } from 'vue';
+import { useAuth } from '@/store';
+import { reactive, toRefs, computed } from 'vue';
 import axios from 'axios';
 export default {
   setup() {
     const state = reactive({
       comments: [],
     });
+
+    const useAuthService = useAuth();
+
+    const isAdmin = computed(() => useAuthService.adminIsAuthorized);
 
     axios.get('http://localhost:5000/comments').then(
       (res) => {
@@ -67,7 +69,7 @@ export default {
     };
 
     const { comments } = toRefs(state);
-    return { store, comments, handleDelete };
+    return { isAdmin, comments, handleDelete };
   },
 };
 </script>

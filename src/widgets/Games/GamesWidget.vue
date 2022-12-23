@@ -40,13 +40,16 @@ import {
   onMounted,
   // onBeforeMount, getCurrentInstance
 } from 'vue';
-import store from '@/store/index';
+// import store from '@/store/index';
 // import { useStore } from 'vuex';
 import axios from 'axios';
 import router from '@/router';
+import { useFavourites, useAuth } from '@/store';
 export default {
   setup() {
     const key = ref(process.env.VUE_APP_API_KEY);
+    const useFavouritesService = useFavourites();
+    const useAuthService = useAuth();
     // const store = useStore();
 
     function moveRows(leagueId) {
@@ -96,7 +99,7 @@ export default {
       onMounted(async () => {
         const rows = document.querySelectorAll('tr');
 
-        const favourites = store.getters['favourites/favourites'];
+        const favourites = useFavouritesService.favourites;
         const { games, leagues } = favourites;
 
         // Details button change
@@ -113,8 +116,8 @@ export default {
           }
         });
 
-        if (store._state.data.auth.userIsAuthorized) {
-          store.dispatch('favourites/getFavourites');
+        if (useAuthService.userIsAuthorized) {
+          useFavouritesService.getFavourites();
           // console.log(store.getters.favourites);
 
           // MOVE FAVOURITES ON TOP

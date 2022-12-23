@@ -28,6 +28,7 @@ import {
   // , onBeforeMount, getCurrentInstance
 } from 'vue';
 import '@vuepic/vue-datepicker/dist/main.css';
+import { format } from '@/utils/format';
 
 export default {
   setup() {
@@ -42,20 +43,20 @@ export default {
     //   current.proxy.$forceUpdate();
     // });
 
-    const format = (date) => {
-      let day;
-      if (date.getDate().toString().length === 1) {
-        day = '0' + date.getDate();
-        console.log(day);
-      } else {
-        day = date.getDate();
-      }
+    // const format = (date) => {
+    //   let day;
+    //   if (date.getDate().toString().length === 1) {
+    //     day = '0' + date.getDate();
+    //     console.log(day);
+    //   } else {
+    //     day = date.getDate();
+    //   }
 
-      const month = date.getMonth() + 1;
-      const year = date.getFullYear();
+    //   const month = date.getMonth() + 1;
+    //   const year = date.getFullYear();
 
-      return `${year}-${month}-${day}`;
-    };
+    //   return `${year}-${month}-${day}`;
+    // };
 
     const handleDate = (date) => {
       router.push({

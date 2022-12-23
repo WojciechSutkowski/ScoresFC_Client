@@ -1,9 +1,9 @@
 <template>
   <div class="comment center">
-    <div class="comment__login" v-if="!store._state.data.auth.userIsAuthorized">
+    <div class="comment__login" v-if="!isAuthorized">
       <p>Login to add comment</p>
     </div>
-    <div class="comment__new" v-if="store._state.data.auth.userIsAuthorized">
+    <div class="comment__new" v-if="isAuthorized">
       <textarea
         maxlength="400"
         class="comment__new__input"
@@ -38,14 +38,18 @@
 
 <script>
 import axios from 'axios';
-import { ref, reactive, toRefs } from 'vue';
+import { ref, reactive, toRefs, computed } from 'vue';
 import { useRoute } from 'vue-router';
-import store from '@/store/index';
+// import store from '@/store/index';
+import { useAuth } from '@/store';
 export default {
   setup() {
     const route = useRoute();
     const comment = ref('');
     const username = ref('');
+    const useAuthService = useAuth();
+
+    const isAuthorized = computed(() => useAuthService.userIsAuthorized);
 
     function handleComment(e) {
       e.preventDefault();
@@ -101,7 +105,7 @@ export default {
     const { comments } = toRefs(state);
     console.log(comments);
 
-    return { username, handleComment, comments, comment, store };
+    return { username, handleComment, comments, comment, isAuthorized };
   },
 };
 </script>

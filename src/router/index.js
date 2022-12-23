@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import { routes } from './routes';
-import store from '@/store/index';
+// import store from '@/store/index';
+import { useAuth } from '@/store';
 
 const router = createRouter({
   history: createWebHistory(),
@@ -8,7 +9,8 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  console.log(store._state.data.auth.userIsAuthorized);
+  const useAuthService = useAuth();
+  // console.log(store._state.data.auth.userIsAuthorized);
   // console.log(to);
   // Refactor
   let authCheck = null;
@@ -24,11 +26,13 @@ router.beforeEach((to, from, next) => {
   // const authCheck = localStorage.getItem("auth");
 
   if (authCheck) {
-    store.commit('auth/setUserIsAuthenticated', true);
+    useAuthService.setUserIsAuthenticated(true);
+    // store.commit('auth/setUserIsAuthenticated', true);
   }
 
   if (adminCheck) {
-    store.commit('auth/setAdminIsAuthenticated', true);
+    useAuthService.setAdminIsAuthenticated(true);
+    // store.commit('auth/setAdminIsAuthenticated', true);
   }
 
   if (to.matched.some((record) => record.meta.requiresAuth)) {

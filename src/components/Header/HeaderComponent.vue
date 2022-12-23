@@ -20,19 +20,11 @@
       </select>
     </div>
 
-    <button
-      class="header__button"
-      @click="handleLogin"
-      v-if="!store._state.data.auth.userIsAuthorized"
-    >
+    <button class="header__button" @click="handleLogin" v-if="!isAuthorized">
       Login
     </button>
 
-    <div
-      class="header__profile"
-      @click="handleProfile"
-      v-if="store._state.data.auth.userIsAuthorized"
-    >
+    <div class="header__profile" @click="handleProfile" v-if="isAuthorized">
       <div
         @click="isProfileDropdownOpen = !isProfileDropdownOpen"
         :class="{ header__profile__bar__active: isProfileDropdownOpen }"
@@ -171,15 +163,18 @@
 </template>
 
 <script>
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
 // import router from '@/router';
 import { allContinents } from '@/data/index';
-import store from '@/store/index';
+import { useAuth } from '@/store';
 
 export default {
   setup() {
     const router = useRouter();
+    const useAuthService = useAuth();
+
+    const isAuthorized = computed(() => useAuthService.userIsAuthorized);
 
     const isProfileDropdownOpen = ref(false);
     const isProfileClicked = ref(false);
@@ -227,7 +222,8 @@ export default {
       allContinents,
       handleLogo,
       handleSearch,
-      store,
+      // store,
+      isAuthorized,
     };
   },
 };

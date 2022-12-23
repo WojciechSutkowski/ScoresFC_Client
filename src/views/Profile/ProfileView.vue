@@ -14,4 +14,4 @@ export default {
 };
 </script>
 
-<style lang="scss" src="./ProfileView.scss"></style>
+<style lang="scss"></style>

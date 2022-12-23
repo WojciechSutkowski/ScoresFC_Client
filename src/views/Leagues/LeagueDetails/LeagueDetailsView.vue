@@ -1,16 +1,15 @@
 <template>
-  <div
-    class="main-container"
-    style="font-size: 4rem"
-    v-for="response in details"
-    :key="response"
-  >
-    <header class="league__header">
+  <div class="main-container" style="font-size: 4rem" v-if="leagues">
+    <!-- <p>{{ leagues.league }}</p> -->
+    <!-- <p>{{ leagues.country }}</p> -->
+    <p>{{ leagues }}</p>
+    <!-- <p>{{ leagues.seasons }}</p> -->
+    <!-- <header class="league__header">
       <div class="league__info">
-        <!-- <img class="league__logo" :src="response.league.logo" /> -->
+        <img class="league__logo" :src="response.league.logo" />
         <div>
           <p>
-            {{ response.league.name }}
+            {{ response.name }}
           </p>
           <div class="league__country">
             <img class="league__country__flag" :src="response.country.flag" />
@@ -32,10 +31,10 @@
         </div>
         <button>Archive seasons</button>
       </div>
-    </header>
+    </header> -->
 
-    {{ leagues }}
-    {{ $store.state.league }}
+    <!-- {{ leagues }} -->
+    <!-- {{ $store.state.league }} -->
 
     <standings-widget
       v-for="season in response.seasons"
@@ -44,7 +43,6 @@
       :data-league="response.league.id"
       :data-season="season.year"
     ></standings-widget>
-    <p>halo</p>
   </div>
 </template>
 
@@ -54,23 +52,26 @@ import StandingsWidget from '@/widgets/Standings/StandingsWidget.vue';
 // import { reactive, toRefs } from 'vue';
 import { onBeforeMount, computed } from 'vue';
 // import axios from 'axios';
-import store from '@/store/index';
+// import store from '@/store/index';
+import { useLeagues } from '@/store';
 
 export default {
   setup() {
+    const useLeagueService = useLeagues();
+    console.log(useLeagueService);
     // console.log(useRoute());
-    console.log(store.getters);
+    // console.log(store.getters);
 
-    const leagues = computed(() => {
-      return store.getters['leagues/league'];
+    const leagues = computed(() => useLeagueService.league);
+
+    console.log(leagues.value);
+
+    onBeforeMount(async () => {
+      await useLeagueService.getLeague();
     });
 
-    onBeforeMount(() => {
-      store.dispatch('leagues/getLeague');
-    });
-
-    const details = store.getters['leagues/league'];
-    console.log(details);
+    // const details = store.getters['leagues/league'];
+    // console.log(details);
 
     ///////////////////////////////////////////////////////
     // const route = useRoute();

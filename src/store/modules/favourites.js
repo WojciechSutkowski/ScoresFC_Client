@@ -1,17 +1,13 @@
-import axios from 'axios';
+// import axios from 'axios';
+const axios = require('axios');
+import { defineStore } from 'pinia';
 
-export default {
-  namespaced: true,
-  state: {
-    favourites: {},
-  },
-  getters: {
-    favourites(state) {
-      return state.favourites;
-    },
-  },
+export const useFavourites = defineStore('favourites', {
+  state: () => ({
+    favourites: false,
+  }),
   actions: {
-    async getFavourites(context) {
+    async getFavourites() {
       try {
         const params = {
           username: localStorage.getItem('username'),
@@ -24,15 +20,10 @@ export default {
           games: res.data.favouriteGames,
           teams: res.data.favouriteTeams,
         };
-        context.commit('setFavourites', replacement);
+        this.favourites = replacement;
       } catch (err) {
         console.log(err);
       }
     },
   },
-  mutations: {
-    setFavourites(state, replacement) {
-      state.favourites = replacement;
-    },
-  },
-};
+});

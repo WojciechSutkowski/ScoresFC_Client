@@ -1,22 +1,15 @@
-import axios from 'axios';
 import { useRoute } from 'vue-router';
+import axios from 'axios';
+import { defineStore } from 'pinia';
 
-export default {
-  namespaced: true,
-  state: {
-    league: 'dlaczego kurwa nie działa',
-  },
-  getters: {
-    league(state) {
-      console.log(state);
-      return state.league;
-    },
-  },
+export const useLeagues = defineStore('leagues', {
+  state: () => ({
+    league: {},
+  }),
   actions: {
-    async getLeague(context) {
-      const route = useRoute();
-
+    async getLeague() {
       try {
+        const route = useRoute();
         const params = {
           country: route.params.country,
           league: route.params.name,
@@ -34,15 +27,12 @@ export default {
           league,
           seasons,
         };
-        context.commit('setLeague', replacement);
+
+        console.log(replacement);
+        this.league = replacement;
       } catch (err) {
         console.log(err);
       }
     },
   },
-  mutations: {
-    setLeague(state, replacement) {
-      state.league = replacement;
-    },
-  },
-};
+});

@@ -3,11 +3,12 @@
 </template>
 
 <script>
-import store from '@/store/index';
+import { useFavourites } from '@/store';
 
 export default {
   setup() {
-    const favourites = store.getters['favourites/favourites'];
+    const useFavouritesService = useFavourites();
+    const favourites = useFavouritesService.favourites;
     const { games, leagues, teams } = favourites;
 
     return {

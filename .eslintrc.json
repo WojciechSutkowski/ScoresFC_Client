@@ -2,9 +2,13 @@
   "root": true,
   "env": {
     "browser": true,
-    "node": true
+    "node": true,
+    "jest": true
   },
-  "extends": ["plugin:vue/vue3-essential", "eslint:recommended"],
+  "extends": [
+    "plugin:vue/vue3-essential",
+    "eslint:recommended"
+  ],
   "parserOptions": {
     "ecmaVersion": 2020
   },
@@ -15,6 +19,47 @@
         "max": 220
       }
     ],
-    "quotes": ["error", "single"]
-  }
+    "quotes": [
+      "error",
+      "single"
+    ]
+  },
+  "overrides": [
+    {
+      "files": [
+        "**/__tests__/*.{j,t}s?(x)",
+        "**/tests/unit/**/*.spec.{j,t}s?(x)"
+      ],
+      "env": {
+        "jest": true
+      }
+    },
+    {
+      "files": [
+        "**/__tests__/*.{j,t}s?(x)",
+        "**/tests/unit/**/*.spec.{j,t}s?(x)"
+      ],
+      "env": {
+        "jest": true
+      }
+    },
+    {
+      "files": [
+        "**/__tests__/*.{j,t}s?(x)",
+        "**/tests/unit/**/*.spec.{j,t}s?(x)"
+      ],
+      "env": {
+        "jest": true
+      }
+    },
+    {
+      "files": [
+        "**/__tests__/*.{j,t}s?(x)",
+        "**/tests/unit/**/*.spec.{j,t}s?(x)"
+      ],
+      "env": {
+        "jest": true
+      }
+    }
+  ]
 }
