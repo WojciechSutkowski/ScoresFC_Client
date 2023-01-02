@@ -12,7 +12,11 @@
         v-model="comment"
         required
       />
-      <button class="comment__new__btn" type="primary" @click="handleComment">
+      <button
+        class="comment__new__btn button__light"
+        type="primary"
+        @click="handleComment"
+      >
         Add
       </button>
     </div>
@@ -37,77 +41,33 @@
 </template>
 
 <script>
-import axios from 'axios';
-import { ref, reactive, toRefs, computed } from 'vue';
+import { ref, computed, onBeforeMount } from 'vue';
 import { useRoute } from 'vue-router';
-// import store from '@/store/index';
 import { useAuth } from '@/store';
+import { useComments } from '@/store';
 export default {
   setup() {
     const route = useRoute();
     const comment = ref('');
-    const username = ref('');
     const useAuthService = useAuth();
-
+    const useCommentsService = useComments();
     const isAuthorized = computed(() => useAuthService.userIsAuthorized);
+    const comments = computed(() => useCommentsService.comments);
+
+    onBeforeMount(async () => {
+      await useCommentsService.getComments();
+    });
 
     function handleComment(e) {
       e.preventDefault();
 
-      let params = {
-        username: localStorage.getItem('username'),
-        gameId: route.params.id,
-        comment: comment.value,
-      };
-
-      axios.post('http://localhost:5000/comments/create', params).then(
-        (res) => {
-          if (res.status == '200') {
-            console.log('Added correctly');
-            location.reload();
-          }
-        },
-        (err) => {
-          console.log(err.response);
-        }
-      );
+      useCommentsService.setComment(comment.value, route);
+      location.reload();
     }
 
-    const state = reactive({
-      comments: [],
-    });
-
-    const params = {
-      gameId: route.params.id,
-    };
-
-    axios.get(`http://localhost:5000/comments/${params.gameId}`).then(
-      (res) => {
-        if (res.status == '200') {
-          for (let i = 0; i < res.data.allComments.length; i++) {
-            state.comments[i] = {
-              comment: res.data.allComments[i].comment,
-              username: res.data.allComments[i].username,
-              date: res.data.allComments[i].createdAt
-                .replace(/T/, ' ')
-                .replace(/\..+/, ''),
-            };
-          }
-          state.comments.reverse();
-          console.log(state.comments);
-        }
-      },
-      (err) => {
-        console.log(err.response);
-      }
-    );
-
-    const { comments } = toRefs(state);
-    console.log(comments);
-
-    return { username, handleComment, comments, comment, isAuthorized };
+    return { handleComment, comments, comment, isAuthorized };
   },
 };
 </script>
 
-<style lang="scss" src="./CommentsComponent.scss" scoped />
+<style lang="scss" src="./CommentsComponent.scss" />

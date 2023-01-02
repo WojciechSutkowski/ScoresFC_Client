@@ -15,11 +15,25 @@ export default {
     const route = useRoute();
 
     const gameId = route.params.id;
-    console.log(gameId);
 
     return {
       gameId,
     };
+  },
+  beforeRouteEnter(to, from) {
+    if (
+      to.path !== from.path &&
+      to.name === 'Match details' &&
+      (from.path !== '/' || from.name === 'Home')
+    ) {
+      console.log(from);
+      window.location.replace(to.path);
+    }
+  },
+  beforeRouteUpdate(to, from) {
+    if (to.path !== from.path && to.name === 'Match details') {
+      window.location.replace(to.path);
+    }
   },
   components: {
     GameWidget,

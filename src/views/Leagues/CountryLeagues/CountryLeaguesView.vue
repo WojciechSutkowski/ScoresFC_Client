@@ -1,55 +1,43 @@
 <template>
   <div class="main-container" style="font-size: 4rem">
-    <p>{{ params.country }}</p>
-    <ul v-for="league in leagues" :key="league.leagueName">
-      <li @click="goToLeaguePage(league.leagueName)">
+    <p class="info">{{ route.params.country }}</p>
+    <ul class="list">
+      <li
+        v-for="league in leagues"
+        :key="league.leagueName"
+        class="list__item"
+        @click="goToLeaguePage(league.leagueName)"
+      >
         {{ league.leagueName }}
       </li>
     </ul>
-    <!-- <p>Poland</p>
-    <ul>
-      <li @click="goToLeaguePage('Ekstraklasa')">Ekstraklasa</li>
-      <li>I Liga</li>
-    </ul> -->
   </div>
 </template>
 
 <script>
 import { useRoute } from 'vue-router';
-// import { onUpdated } from "vue";
-import axios from 'axios';
+import {
+  onBeforeMount,
+  // computed
+} from 'vue';
 import router from '@/router';
-import { reactive, toRefs } from 'vue';
+import { useLeagues } from '@/store';
+import { countryLeagues } from '@/mocks/countryLeagues';
 export default {
   setup() {
     const route = useRoute();
-    // const Leagues = route.params;
-    // onUpdated(() => {
-    //   window.location.reload();
-    // });
-    const state = reactive({
-      leagues: [],
+
+    const useLeagueService = useLeagues();
+
+    onBeforeMount(async () => {
+      await useLeagueService.getCountryLeagues();
     });
-    const params = {
-      country: route.params.country,
-    };
-    axios.get(`http://localhost:5000/leagues/${params.country}`).then(
-      (res) => {
-        if (res.status == '200') {
-          for (let i = 0; i < res.data.length; i++) {
-            state.leagues[i] = {
-              leagueName: res.data[i].league.name,
-            };
-          }
-        }
-        // window.location.reload();
-      },
-      (err) => {
-        console.log(err.response);
-      }
-    );
-    const { leagues } = toRefs(state);
-    console.log(JSON.stringify(leagues));
+
+    // const leagues = computed(() => useLeagueService.countryLeagues);
+
+    const leagues = countryLeagues;
+
+    console.log(leagues);
 
     function goToLeaguePage(leagueName) {
       const params = {
@@ -72,8 +60,7 @@ export default {
     }
     // window.location.reload();
 
-    return { leagues, params, goToLeaguePage };
-    // return { goToLeaguePage };
+    return { leagues, route, goToLeaguePage };
   },
 };
 </script>

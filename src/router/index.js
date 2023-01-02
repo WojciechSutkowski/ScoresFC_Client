@@ -23,16 +23,12 @@ router.beforeEach((to, from, next) => {
     adminCheck = parsedToken.token.admin;
   }
 
-  // const authCheck = localStorage.getItem("auth");
-
   if (authCheck) {
     useAuthService.setUserIsAuthenticated(true);
-    // store.commit('auth/setUserIsAuthenticated', true);
   }
 
   if (adminCheck) {
     useAuthService.setAdminIsAuthenticated(true);
-    // store.commit('auth/setAdminIsAuthenticated', true);
   }
 
   if (to.matched.some((record) => record.meta.requiresAuth)) {
@@ -40,6 +36,21 @@ router.beforeEach((to, from, next) => {
       next();
     } else {
       router.replace('/login');
+    }
+  } else {
+    next();
+  }
+
+  if (authCheck) {
+    if (to.path === '/login' || to.path === '/register') {
+      router.replace('/profile');
+    } else {
+      next();
+    }
+    if (to.path === '/login-admin') {
+      router.replace('/admin');
+    } else {
+      next();
     }
   } else {
     next();

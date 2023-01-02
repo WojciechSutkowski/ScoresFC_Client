@@ -34,10 +34,11 @@
       resize: none;
     }
     &__btn {
-      background-color: var(--color-accent-light);
       align-self: flex-end;
       width: 25%;
       min-height: 2.4em;
+      cursor: pointer;
+      border-radius: 9px;
     }
   }
 

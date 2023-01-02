@@ -20,7 +20,7 @@
       </select>
     </div>
 
-    <button class="header__button" @click="handleLogin" v-if="!isAuthorized">
+    <button class="button__light" @click="handleLogin" v-if="!isAuthorized">
       Login
     </button>
 
@@ -165,7 +165,6 @@
 <script>
 import { ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
-// import router from '@/router';
 import { allContinents } from '@/data/index';
 import { useAuth } from '@/store';
 
@@ -175,7 +174,6 @@ export default {
     const useAuthService = useAuth();
 
     const isAuthorized = computed(() => useAuthService.userIsAuthorized);
-
     const isProfileDropdownOpen = ref(false);
     const isProfileClicked = ref(false);
 
@@ -185,14 +183,10 @@ export default {
 
     const handleLogin = () => router.push('/login');
 
-    const handleProfile = () => {
-      const profileList = document.querySelectorAll('dropdown_list')[0];
-      profileList.style.visibility = 'visible';
-    };
-
     const handleLogout = () => {
+      useAuthService.setToken(false);
       localStorage.clear();
-      router.go('/');
+      window.location.reload();
     };
 
     const handleSearch = (event) => {
@@ -200,13 +194,11 @@ export default {
         event.preventDefault();
         const input = document.querySelector('.search__input');
         const type = document.querySelector('.search__type');
-        console.log(input.value);
-        console.log(type.value);
-        localStorage.setItem('search', input.value);
         router.push({
           name: 'Search results',
           params: {
             type: type.value,
+            input: input.value,
           },
         });
       }
@@ -214,7 +206,6 @@ export default {
 
     return {
       handleLogin,
-      handleProfile,
       handleLogout,
       username,
       isProfileDropdownOpen,
@@ -222,11 +213,10 @@ export default {
       allContinents,
       handleLogo,
       handleSearch,
-      // store,
       isAuthorized,
     };
   },
 };
 </script>
 
-<style lang="scss" src="./HeaderComponent.scss" scoped />
+<style lang="scss" src="./HeaderComponent.scss" />

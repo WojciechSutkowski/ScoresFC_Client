@@ -4,7 +4,7 @@
     data-host="v3.football.api-sports.io"
     :data-key="key"
     data-id=""
-    data-theme="dark"
+    data-theme="light"
     data-refresh="1500"
     data-show-errors="false"
     data-show-logos="true"

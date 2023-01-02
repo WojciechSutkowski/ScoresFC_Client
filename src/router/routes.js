@@ -9,9 +9,12 @@ import Favourites from '../views/Favourites/FavouritesView.vue';
 import LeagueSeasons from '../views/Leagues/LeagueSeasons/LeagueSeasonsView.vue';
 import LeagueDetails from '../views/Leagues/LeagueDetails/LeagueDetailsView.vue';
 import CountryLeagues from '../views/Leagues/CountryLeagues/CountryLeaguesView.vue';
-import TeamDetails from '../views/Team/TeamDetailsView.vue';
+import TeamDetails from '../views/Team/Details/TeamDetailsView.vue';
+import TeamSquad from '../views/Team/Squad/TeamSquadView.vue';
+import TeamGames from '../views/Team/Games/TeamGamesView.vue';
 import GameDetails from '../views/Game/GameView.vue';
 import PlayerDetails from '../views/Player/PlayerDetailsView.vue';
+import LeagueGames from '../views/Leagues/LeagueGames/LeagueGamesView.vue';
 
 export const routes = [
   {
@@ -41,7 +44,7 @@ export const routes = [
     component: Register,
   },
   {
-    path: '/search/:type',
+    path: '/search/:type/:input',
     name: 'Search results',
     component: SearchResults,
     props: true,
@@ -65,13 +68,19 @@ export const routes = [
     meta: { requiresAuth: true },
   },
   {
-    path: '/league/seasons/:id',
+    path: '/league/seasons/:country/:name',
     name: 'League seasons',
     component: LeagueSeasons,
     props: true,
   },
   {
-    path: '/league/:country/:name',
+    path: '/league/:id/:season/games/:type',
+    name: 'League games',
+    component: LeagueGames,
+    props: true,
+  },
+  {
+    path: '/league/:country/:name/:season?',
     name: 'League details',
     component: LeagueDetails,
     props: true,
@@ -86,6 +95,18 @@ export const routes = [
     path: '/team/:id',
     name: 'Team details',
     component: TeamDetails,
+    props: true,
+  },
+  {
+    path: '/team/:id/squad',
+    name: 'Team squad',
+    component: TeamSquad,
+    props: true,
+  },
+  {
+    path: '/team/:id/games',
+    name: 'Team games',
+    component: TeamGames,
     props: true,
   },
   {

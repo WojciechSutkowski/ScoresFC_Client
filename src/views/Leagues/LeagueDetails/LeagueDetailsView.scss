@@ -1,32 +1,77 @@
-.league__header {
-  background-color: green;
-  display: flex;
-}
+.league {
+  &__header {
+    display: flex;
+    padding: 1rem 2rem;
+    background-color: var(--color-gray);
+    border-radius: 1rem;
+    justify-content: space-between;
 
-.league__info {
-  display: grid;
-  grid-template-columns: 1fr 4fr;
-  grid-template-rows: 1fr;
-}
+    &__info {
+      display: flex;
+      // grid-template-columns: 1fr 4fr;
+      // grid-template-rows: 1fr;
+    }
 
-.league__logo {
-  width: 12rem;
-  padding: 1rem;
-  background-color: white;
-}
+    &__logo {
+      width: 12rem;
+      padding: 1rem;
+      background-color: white;
+      margin-right: 1rem;
+    }
 
-.league__country {
-  display: flex;
+    &__names {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-evenly;
+    }
 
-  &__flag {
-    width: 4rem;
+    &__country {
+      display: flex;
+
+      &--flag {
+        width: 4rem;
+      }
+    }
+
+    &__container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-evenly;
+    }
+
+    &__season {
+      justify-self: flex-end;
+      display: flex;
+
+      p {
+        font-size: 3rem;
+      }
+    }
+  }
+
+  &__main {
+    display: grid;
+    grid-template-rows: 1fr 3fr 3fr 3fr 3fr;
+    grid-template-columns: 2fr 3fr 5fr;
+    &__submenu {
+      display: flex;
+      width: fit-content;
+      grid-column: 1/2;
+    }
+
+    .matches {
+      grid-row: 2/-1;
+      grid-column: 1/3;
+    }
+
+    .widget-80 {
+      grid-row: 1/-1;
+      grid-column: 3/4;
+    }
   }
 }
 
-.league__season {
-  display: flex;
-
-  p {
-    font-size: 2rem;
-  }
+.button__light {
+  border: 1px solid var(--color-accent-dark);
 }

@@ -11,8 +11,6 @@
       class="center widget-80"
     />
 
-    <!-- <component :is="HeaderComponent" /> -->
-
     <games-widget class="center widget-80" :data-date="date"></games-widget>
   </main>
   <button @click="scrollToTop" class="scrollToTop">Top</button>
@@ -32,40 +30,14 @@ import { format } from '@/utils/format';
 
 export default {
   setup() {
-    console.log(history.state);
     const route = useRoute();
     const date = ref(route.params.date);
-
-    // onBeforeMount(() => {
-    //   // console.log("home ");
-    //   const current = getCurrentInstance();
-    //   // console.log(current);
-    //   current.proxy.$forceUpdate();
-    // });
-
-    // const format = (date) => {
-    //   let day;
-    //   if (date.getDate().toString().length === 1) {
-    //     day = '0' + date.getDate();
-    //     console.log(day);
-    //   } else {
-    //     day = date.getDate();
-    //   }
-
-    //   const month = date.getMonth() + 1;
-    //   const year = date.getFullYear();
-
-    //   return `${year}-${month}-${day}`;
-    // };
 
     const handleDate = (date) => {
       router.push({
         name: 'Home',
         params: { date: format(date), format: format(date) },
       });
-      // setTimeout(() => {
-      //   location.reload();
-      // }, 500);
     };
 
     const scrollBtn = document.getElementsByClassName('scrollToTop');

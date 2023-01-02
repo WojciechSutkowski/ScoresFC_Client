@@ -6,7 +6,7 @@
     data-date=""
     data-league=""
     data-season=""
-    data-theme="grey"
+    data-theme="light"
     data-refresh="600"
     data-show-toolbar="false"
     data-show-errors="false"
@@ -15,42 +15,19 @@
     data-modal-standings="true"
     data-modal-show-logos="true"
   ></div>
-  <!-- <div
-    id="wg-api-football-games"
-    data-host="v3.football.api-sports.io"
-    data-date="2022-12-14"
-    data-league=""
-    data-season=""
-    data-theme="grey"
-    data-refresh="600"
-    data-show-toolbar="false"
-    data-show-errors="false"
-    data-show-logos="true"
-    data-modal-game="true"
-    data-modal-standings="true"
-    data-modal-show-logos="true"
-    class="center widget-80"
-    data-v-7ab20b76=""
-  /> -->
 </template>
 
 <script>
-import {
-  ref,
-  onMounted,
-  // onBeforeMount, getCurrentInstance
-} from 'vue';
-// import store from '@/store/index';
-// import { useStore } from 'vuex';
-import axios from 'axios';
+import { ref, onMounted } from 'vue';
 import router from '@/router';
 import { useFavourites, useAuth } from '@/store';
+import { useToast } from 'vue-toastification';
 export default {
   setup() {
     const key = ref(process.env.VUE_APP_API_KEY);
     const useFavouritesService = useFavourites();
     const useAuthService = useAuth();
-    // const store = useStore();
+    const toast = useToast();
 
     function moveRows(leagueId) {
       const rows = document.querySelector('table').rows,
@@ -79,21 +56,18 @@ export default {
               name: 'Match details',
               params: { id: `${row.id.slice(14)}` },
             });
-            setTimeout(() => {
-              location.reload();
-            }, 500);
+            // setTimeout(() => {
+            //   location.reload();
+            // }, 500);
           });
         });
       } else {
-        console.log('League!!!');
+        toast.error('Cannot go to match page', {
+          toastClassName: 'custom_toast',
+          timeout: 2000,
+        });
       }
     }
-
-    // onBeforeMount(() => {
-    //   console.log('log');
-    //   const current = getCurrentInstance();
-    //   current.proxy.$forceUpdate();
-    // });
 
     setTimeout(
       onMounted(async () => {
@@ -118,131 +92,59 @@ export default {
 
         if (useAuthService.userIsAuthorized) {
           useFavouritesService.getFavourites();
-          // console.log(store.getters.favourites);
-
-          // MOVE FAVOURITES ON TOP
-          // Get favourites from database
 
           rows.forEach(function (el) {
             // Add button to every table row
             const btn = document.createElement('td');
-            btn.setAttribute('width', '24px');
             const star = document.createElement('img');
+            btn.setAttribute('width', '24px');
             btn.appendChild(star);
 
             let isFav;
 
-            if (leagues.includes(el.id)) {
-              moveRows(el.id);
-            }
-
-            if (leagues.includes(el.id) || games.includes(el.id)) {
+            const setStar = (star) => {
               star.setAttribute('src', require('@/assets/icons/star_fill.png'));
               star.style = 'width: 2rem';
               isFav = true;
-            } else {
+            };
+
+            const unsetStar = (star) => {
               star.setAttribute('src', require('@/assets/icons/star.png'));
               star.style = 'width: 2rem';
               isFav = false;
+            };
+
+            if (leagues.includes(el.id.slice(16))) {
+              moveRows(el.id);
+            }
+
+            if (
+              leagues.includes(el.id.slice(16)) ||
+              games.includes(el.id.slice(14))
+            ) {
+              setStar(star);
+            } else {
+              unsetStar(star);
             }
 
             btn.onclick = function () {
               if (el.id.startsWith('football-league')) {
-                const params = {
-                  username: localStorage.getItem('username'),
-                  leagueId: el.id,
-                };
-                console.log(params);
-                // Add league ID to database
                 if (isFav) {
-                  axios
-                    .delete('http://localhost:5000/users/favourite-leagues', {
-                      params,
-                    })
-                    .then(
-                      (res) => {
-                        if (res.status == '200') {
-                          console.log(`Removed league ID ${params.leagueId}`);
-                        }
-                      },
-                      (err) => {
-                        console.log(err.response);
-                      }
-                    );
-                  star.setAttribute('src', require('@/assets/icons/star.png'));
-                  star.style = 'width: 2rem';
-                  isFav = false;
-                  // Move league to the top
+                  useFavouritesService.deleteLeague(el.id.slice(16));
+                  unsetStar(star);
                 } else {
-                  axios
-                    .post(
-                      'http://localhost:5000/users/favourite-leagues',
-                      params
-                    )
-                    .then(
-                      (res) => {
-                        if (res.status == '200') {
-                          console.log(`Added league ID ${params.leagueId}`);
-                        }
-                      },
-                      (err) => {
-                        console.log(err.response);
-                      }
-                    );
-                  star.setAttribute(
-                    'src',
-                    require('@/assets/icons/star_fill.png')
-                  );
-                  star.style = 'width: 2rem';
-                  isFav = true;
-                  // Move league to the top
+                  useFavouritesService.addLeague(el.id.slice(16));
+                  setStar(star);
                   moveRows(el.id);
                 }
               } else if (el.id.startsWith('football-game')) {
-                const params = {
-                  username: localStorage.getItem('username'),
-                  gameId: el.id,
-                };
-                // Add game ID to database
                 if (isFav) {
-                  axios
-                    .delete('http://localhost:5000/users/favourite-games', {
-                      params,
-                    })
-                    .then(
-                      (res) => {
-                        if (res.status == '200') {
-                          console.log(`Removed game ID ${params.gameId}`);
-                        }
-                      },
-                      (err) => {
-                        console.log(err.response);
-                      }
-                    );
-                  star.setAttribute('src', require('@/assets/icons/star.png'));
-                  star.style = 'width: 2rem';
-                  isFav = false;
+                  useFavouritesService.deleteGame(el.id.slice(14));
+                  unsetStar(star);
                 } else {
-                  axios
-                    .post('http://localhost:5000/users/favourite-games', params)
-                    .then(
-                      (res) => {
-                        if (res.status == '200') {
-                          console.log(`Added game ID ${params.gameId}`);
-                        }
-                      },
-                      (err) => {
-                        console.log(err.response);
-                      }
-                    );
-                  star.setAttribute(
-                    'src',
-                    require('@/assets/icons/star_fill.png')
-                  );
-                  star.style = 'width: 2rem';
-                  isFav = true;
+                  useFavouritesService.addGame(el.id.slice(14));
+                  setStar(star);
                 }
-                console.log(isFav);
               }
             };
             el.insertBefore(btn, el.firstChild);
@@ -254,6 +156,7 @@ export default {
 
     return {
       key,
+      toast,
     };
   },
 };

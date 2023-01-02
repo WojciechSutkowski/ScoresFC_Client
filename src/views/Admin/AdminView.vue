@@ -1,77 +1,61 @@
 <template>
   <div class="main-container">
-    <p v-if="!isAdmin">You are not allowed to admin panel</p>
-    <p v-if="isAdmin">Welcome admin</p>
-    <ul v-for="comment in comments" :key="comment.comment">
-      <li>
-        <p>
-          {{ comment.comment }}
-        </p>
-        <button @click="handleDelete(comment.id)">Delete</button>
-      </li>
-    </ul>
+    <div v-if="!isAdmin" class="info">
+      <p class="info__text">
+        You are trying to access wrong content. Admin page is available only for
+        admin account.
+      </p>
+    </div>
+    <div v-if="isAdmin">
+      <ul class="comment__added__list">
+        <li
+          class="comment__added__item"
+          v-for="comment in comments"
+          :key="comment._id"
+        >
+          <div class="comment__item">
+            <div class="comment__item__info">
+              <p>Author: {{ comment.username }}</p>
+              <p>{{ comment.date }}</p>
+            </div>
+            <p class="comment__item__content">{{ comment.comment }}</p>
+          </div>
+          <button
+            class="comment__delete__button button__light"
+            @click="handleDelete(comment.id)"
+          >
+            DELETE
+          </button>
+        </li>
+      </ul>
+    </div>
   </div>
 </template>
 
 <script>
 import { useAuth } from '@/store';
-import { reactive, toRefs, computed } from 'vue';
-import axios from 'axios';
+import { useAdmin } from '@/store';
+import { onBeforeMount, computed } from 'vue';
 export default {
   setup() {
-    const state = reactive({
-      comments: [],
-    });
-
+    const useAdminService = useAdmin();
     const useAuthService = useAuth();
 
     const isAdmin = computed(() => useAuthService.adminIsAuthorized);
+    const comments = computed(() => useAdminService.comments);
 
-    axios.get('http://localhost:5000/comments').then(
-      (res) => {
-        if (res.status == '200') {
-          console.log(res.data.allComments);
-          for (let i = 0; i < res.data.allComments.length; i++) {
-            state.comments[i] = {
-              comment: res.data.allComments[i].comment,
-              id: res.data.allComments[i]._id,
-            };
-            console.log(state.comments[i]);
-          }
-        }
-        // window.location.reload();
-      },
-      (err) => {
-        console.log(err.response);
-      }
-    );
+    onBeforeMount(async () => {
+      await useAdminService.getComments();
+    });
 
     const handleDelete = (id) => {
-      const params = {
-        username: localStorage.getItem('username'),
-        _id: id,
-      };
-      axios
-        .delete('http://localhost:5000/comments/delete', {
-          params,
-        })
-        .then(
-          (res) => {
-            if (res.status == '200') {
-              console.log(`Removed comment ID ${params._id}`);
-              location.reload();
-            }
-          },
-          (err) => {
-            console.log(err.response);
-          }
-        );
+      useAdminService.deleteComment(id);
+      location.reload();
     };
 
-    const { comments } = toRefs(state);
     return { isAdmin, comments, handleDelete };
   },
 };
 </script>
 
-<style></style>
+<style lang="scss" src="./AdminView.scss" />

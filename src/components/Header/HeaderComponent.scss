@@ -29,25 +29,6 @@
     padding: 0 0.4rem;
   }
 
-  &__button {
-    border: none;
-    width: 12.8rem;
-    height: 3.2rem;
-    border-radius: 9px;
-    background-color: var(--color-gray);
-    color: var(--color-accent-dark);
-    font-size: 1.4rem;
-    padding: 0 0.4rem;
-    cursor: pointer;
-
-    &:hover {
-      transition: all 0.1s linear 0s;
-      border: solid 2px var(--color-accent-light);
-      background-color: var(--color-accent-dark);
-      color: var(--color-accent-light);
-    }
-  }
-
   &__profile {
     cursor: pointer;
 

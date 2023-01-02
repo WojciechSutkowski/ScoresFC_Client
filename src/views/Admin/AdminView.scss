@@ -1,0 +1,18 @@
+.comment__added__item {
+  display: flex;
+}
+
+.comment__delete__button {
+  width: 10rem;
+  align-self: center;
+  background-color: red;
+  color: black;
+  font-weight: bold;
+  margin: 0 0.4rem;
+
+  &:hover {
+    background-color: white;
+    color: red;
+    border-color: black;
+  }
+}

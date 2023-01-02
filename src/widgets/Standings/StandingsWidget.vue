@@ -6,7 +6,7 @@
     data-league=""
     data-team=""
     data-season=""
-    data-theme=""
+    data-theme="light"
     data-show-errors="false"
     data-show-logos="true"
     class="wg_loader"

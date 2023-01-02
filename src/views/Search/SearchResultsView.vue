@@ -1,85 +1,59 @@
 <template>
   <div class="main-container">
     <div v-if="searchType === 'league'">
-      <ul v-for="league in leagues" :key="league.name">
-        <li @click="goToLeaguePage(league.country, league.name)">
-          {{ league.name }}
+      <ul v-for="league in searchResults" :key="league.name">
+        <li @click="goToLeaguePage(league.country.name, league.league.name)">
+          {{ league.league.name }}
         </li>
       </ul>
     </div>
     <div v-if="searchType === 'team'">
-      <ul v-for="team in teams" :key="team.name">
-        <li @click="goToTeamPage(team.id)">
-          {{ team.name }}
+      <ul v-for="team in searchResults" :key="team">
+        <li @click="goToTeamPage(team.team.id)">
+          {{ team.team.name }}
         </li>
       </ul>
     </div>
-    <!-- <div>
-      {{ mockLeague }}
-    </div> -->
-    <!-- <div>
-      {{ mockTeam }}
-    </div> -->
   </div>
 </template>
 
 <script>
-import { useRoute } from 'vue-router';
-import axios from 'axios';
-import { reactive, toRefs, ref } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
+import { useSearch } from '@/store';
+import {
+  onBeforeMount,
+  // computed
+} from 'vue';
+import { searchLeague } from '@/mocks/searchLeague';
+import { searchTeam } from '@/mocks/searchTeam';
 export default {
   setup() {
     const route = useRoute();
+    const router = useRouter();
+    const searchType = route.params.type;
 
-    const state = reactive({
-      leagues: [],
-      teams: [],
+    console.log(searchLeague);
+
+    const useSearchService = useSearch();
+
+    onBeforeMount(async () => {
+      if (searchType === 'league') {
+        await useSearchService.getLeagues();
+      } else if (searchType === 'team') {
+        await useSearchService.getTeams();
+      }
     });
 
-    const type = route.params.type;
+    let searchResults;
 
-    const searchType = ref(type);
-
-    const search = localStorage.getItem('search');
-    console.log(search);
-
-    const params = {
-      search: search,
-    };
-
-    if (type === 'league') {
-      axios.get(`http://localhost:5000/search/league/${params.search}`).then(
-        (res) => {
-          if (res.status == '200') {
-            console.log(res.data);
-            for (let i = 0; i < res.data.length; i++) {
-              state.leagues[i] = {
-                leagueName: res.data[i].league.name,
-              };
-            }
-            console.log(state.leagues);
-          }
-        },
-        (err) => {
-          console.log(err.response);
-        }
-      );
-    } else if (type === 'team') {
-      axios.get(`http://localhost:5000/search/team/${params.search}`).then(
-        (res) => {
-          if (res.status == '200') {
-            console.log(res.data);
-            for (let i = 0; i < res.data.length; i++) {
-              state.teams[i] = {
-                teamName: res.data[i].team.name,
-              };
-            }
-          }
-        },
-        (err) => {
-          console.log(err.response);
-        }
-      );
+    if (searchType === 'league') {
+      // searchResults = computed(() => useSearchService.leagues);
+      searchResults = searchLeague;
+      console.log(searchResults);
+    } else if (searchType === 'team') {
+      // searchResults = computed(() => useSearchService.teams);
+      searchResults = searchTeam;
+      console.log(searchResults);
     }
 
     function goToTeamPage(teamId) {
@@ -87,7 +61,7 @@ export default {
         id: teamId,
       };
 
-      route.push({
+      router.push({
         name: 'Team details',
         params: {
           id: params.id,
@@ -101,7 +75,7 @@ export default {
         league: leagueName,
       };
 
-      route.push({
+      router.push({
         name: 'League details',
         params: {
           country: params.country,
@@ -111,15 +85,11 @@ export default {
       });
     }
 
-    const { leagues, teams } = toRefs(state);
-
     return {
-      // mockLeague, mockTeam
-      leagues,
-      teams,
       searchType,
       goToTeamPage,
       goToLeaguePage,
+      searchResults,
     };
   },
 };

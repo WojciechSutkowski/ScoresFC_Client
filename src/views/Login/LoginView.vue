@@ -28,6 +28,7 @@
 import axios from 'axios';
 import router from '@/router/index';
 import { useAuth } from '@/store';
+import { useToast } from 'vue-toastification';
 import { ref } from 'vue';
 export default {
   setup() {
@@ -35,6 +36,7 @@ export default {
     const password = ref('');
 
     const useAuthService = useAuth();
+    const toast = useToast();
 
     function handleLogin(e) {
       e.preventDefault();
@@ -44,15 +46,13 @@ export default {
         password: password.value,
       };
 
-      // console.log(store.state);
-
       if (window.location.href === 'http://localhost:8080/login') {
         axios.post('http://localhost:5000/users/login-user', checkUser).then(
           (res) => {
             if (res.status == '200') {
-              console.log('Signed in correctly');
-              // store.commit('auth/setUserIsAuthenticated', true);
               useAuthService.setUserIsAuthenticated(true);
+              useAuthService.setToken(res.data.token);
+              console.log(useAuthService.token);
               const token = {
                 username: res.data.username,
                 auth: true,
@@ -61,25 +61,24 @@ export default {
               localStorage.setItem('username', res.data.username);
               localStorage.setItem('auth', true);
               router.push({ path: '/' });
-              setTimeout(() => {
-                location.reload();
-              }, 500);
-              // console.log(store.state);
             }
           },
           (err) => {
             console.log(err.response);
+            toast.error('Incorrect credentials', {
+              toastClassName: 'custom_toast',
+              timeout: 2000,
+            });
           }
         );
       } else {
         axios.post('http://localhost:5000/users/login-admin', checkUser).then(
           (res) => {
             if (res.status == '200') {
-              console.log('Signed in correctly');
-              // store.commit('auth/setUserIsAuthenticated', true);
-              // store.commit('auth/setAdminIsAuthenticated', true);
               useAuthService.setUserIsAuthenticated(true);
               useAuthService.setAdminIsAuthenticated(true);
+              useAuthService.setToken(res.data.token);
+              console.log(useAuthService.token);
               const token = {
                 username: res.data.username,
                 auth: true,
@@ -89,20 +88,21 @@ export default {
               localStorage.setItem('username', res.data.username);
               localStorage.setItem('auth', true);
               localStorage.setItem('admin', true);
-              router.push({ path: '/' });
-              setTimeout(() => {
-                location.reload();
-              }, 500);
+              router.push({ path: '/admin' });
             }
           },
           (err) => {
             console.log(err.response);
+            toast.error('Incorrect credentials', {
+              toastClassName: 'custom_toast',
+              timeout: 2000,
+            });
           }
         );
       }
     }
 
-    return { username, password, handleLogin };
+    return { username, password, handleLogin, toast };
   },
 };
 </script>
