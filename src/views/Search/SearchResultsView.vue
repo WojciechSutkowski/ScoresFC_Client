@@ -1,16 +1,54 @@
 <template>
-  <div class="main-container">
+  <div class="main-container font-24">
     <div v-if="searchType === 'league'">
-      <ul v-for="league in searchResults" :key="league.name">
-        <li @click="goToLeaguePage(league.country.name, league.league.name)">
-          {{ league.league.name }}
+      <div class="info">
+        {{ searchResults.length }} leagues found for: '{{
+          route.params.input
+        }}''
+      </div>
+      <ul class="list">
+        <li
+          class="list__item"
+          v-for="league in searchResults"
+          :key="league.name"
+          @click="
+            goToLeaguePage(
+              league.league.id,
+              league.seasons[league.seasons.length - 1].year,
+              league
+            )
+          "
+        >
+          <img
+            class="list__item__image"
+            :src="league.league.logo"
+            alt="League logo"
+          />
+          <p>
+            {{ league.league.name }}
+          </p>
         </li>
       </ul>
     </div>
     <div v-if="searchType === 'team'">
-      <ul v-for="team in searchResults" :key="team">
-        <li @click="goToTeamPage(team.team.id)">
-          {{ team.team.name }}
+      <div class="info">
+        {{ searchResults.length }} teams found for: '{{ route.params.input }}''
+      </div>
+      <ul class="list">
+        <li
+          class="list__item"
+          v-for="team in searchResults"
+          :key="team"
+          @click="goToTeamPage(team.team.id)"
+        >
+          <img
+            class="list__item__image"
+            :src="team.team.logo"
+            alt="Team logo"
+          />
+          <p>
+            {{ team.team.name }}
+          </p>
         </li>
       </ul>
     </div>
@@ -18,23 +56,16 @@
 </template>
 
 <script>
-import { useRoute, useRouter } from 'vue-router';
+import { onBeforeMount, computed } from 'vue';
+import { useRoute } from 'vue-router';
 import { useSearch } from '@/store';
-import {
-  onBeforeMount,
-  // computed
-} from 'vue';
-import { searchLeague } from '@/mocks/searchLeague';
-import { searchTeam } from '@/mocks/searchTeam';
+import { goToLeaguePage, goToTeamPage } from '@/router/helpers';
 export default {
   setup() {
     const route = useRoute();
-    const router = useRouter();
-    const searchType = route.params.type;
-
-    console.log(searchLeague);
-
     const useSearchService = useSearch();
+    const searchType = route.params.type;
+    let searchResults;
 
     onBeforeMount(async () => {
       if (searchType === 'league') {
@@ -44,55 +75,19 @@ export default {
       }
     });
 
-    let searchResults;
-
     if (searchType === 'league') {
-      // searchResults = computed(() => useSearchService.leagues);
-      searchResults = searchLeague;
-      console.log(searchResults);
+      searchResults = computed(() => useSearchService.leagues);
     } else if (searchType === 'team') {
-      // searchResults = computed(() => useSearchService.teams);
-      searchResults = searchTeam;
-      console.log(searchResults);
-    }
-
-    function goToTeamPage(teamId) {
-      const params = {
-        id: teamId,
-      };
-
-      router.push({
-        name: 'Team details',
-        params: {
-          id: params.id,
-        },
-      });
-    }
-
-    function goToLeaguePage(leagueCountry, leagueName) {
-      const params = {
-        country: leagueCountry,
-        league: leagueName,
-      };
-
-      router.push({
-        name: 'League details',
-        params: {
-          country: params.country,
-          name: params.league,
-          current: true,
-        },
-      });
+      searchResults = computed(() => useSearchService.teams);
     }
 
     return {
       searchType,
+      searchResults,
       goToTeamPage,
       goToLeaguePage,
-      searchResults,
+      route,
     };
   },
 };
 </script>
-
-<style></style>

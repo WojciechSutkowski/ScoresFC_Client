@@ -20,54 +20,14 @@
 <script>
 import { ref, onMounted } from 'vue';
 import router from '@/router';
-import { useFavourites, useAuth } from '@/store';
+import { useAuth, useFavourites } from '@/store';
 import { useToast } from 'vue-toastification';
 export default {
   setup() {
     const key = ref(process.env.VUE_APP_API_KEY);
-    const useFavouritesService = useFavourites();
     const useAuthService = useAuth();
+    const useFavouritesService = useFavourites();
     const toast = useToast();
-
-    function moveRows(leagueId) {
-      const rows = document.querySelector('table').rows,
-        parent = rows[0].parentNode;
-
-      const leagueToMove = document.querySelector(`#${leagueId}`);
-      const gamesToMove = document.querySelectorAll(`.${leagueId}`);
-
-      // League to first row
-      parent.insertBefore(leagueToMove, rows[0]);
-
-      // Games to go under favourite league
-      for (let i = 0; i < gamesToMove.length; i++) {
-        parent.insertBefore(gamesToMove[i], rows[i + 1]);
-      }
-    }
-
-    function goToMatchPage(row) {
-      if (row.id.startsWith('football-game')) {
-        const cells = row.querySelectorAll('td:not(:last-child)');
-        cells.forEach(function (el) {
-          el.style.cursor = 'pointer';
-          el.addEventListener('click', () => {
-            console.log(row.id);
-            router.push({
-              name: 'Match details',
-              params: { id: `${row.id.slice(14)}` },
-            });
-            // setTimeout(() => {
-            //   location.reload();
-            // }, 500);
-          });
-        });
-      } else {
-        toast.error('Cannot go to match page', {
-          toastClassName: 'custom_toast',
-          timeout: 2000,
-        });
-      }
-    }
 
     setTimeout(
       onMounted(async () => {
@@ -76,12 +36,10 @@ export default {
         const favourites = useFavouritesService.favourites;
         const { games, leagues } = favourites;
 
-        // Details button change
+        // Details button hide
         const details = document.querySelectorAll('span[class*="wg_info"]');
-
         details.forEach(function (el) {
-          el.innerHTML = 'Modal';
-          el.style.width = '50px';
+          el.style.display = 'none';
         });
 
         rows.forEach(function (el) {
@@ -98,19 +56,23 @@ export default {
             const btn = document.createElement('td');
             const star = document.createElement('img');
             btn.setAttribute('width', '24px');
+            btn.setAttribute(
+              'style',
+              'background-color: #fff; border-bottom: 0'
+            );
             btn.appendChild(star);
 
             let isFav;
 
             const setStar = (star) => {
               star.setAttribute('src', require('@/assets/icons/star_fill.png'));
-              star.style = 'width: 2rem';
+              star.style = 'width: 2.4rem';
               isFav = true;
             };
 
             const unsetStar = (star) => {
               star.setAttribute('src', require('@/assets/icons/star.png'));
-              star.style = 'width: 2rem';
+              star.style = 'width: 2.4rem';
               isFav = false;
             };
 
@@ -154,6 +116,43 @@ export default {
       1000
     );
 
+    const moveRows = (leagueId) => {
+      const rows = document.querySelector('table').rows,
+        parent = rows[0].parentNode;
+
+      const leagueToMove = document.querySelector(`#${leagueId}`);
+      const gamesToMove = document.querySelectorAll(`.${leagueId}`);
+
+      // League to first row
+      parent.insertBefore(leagueToMove, rows[0]);
+
+      // Games to go under favourite league
+      for (let i = 0; i < gamesToMove.length; i++) {
+        parent.insertBefore(gamesToMove[i], rows[i + 1]);
+      }
+    };
+
+    function goToMatchPage(row) {
+      if (row.id.startsWith('football-game')) {
+        const cells = row.querySelectorAll('td:not(:last-child)');
+        cells.forEach(function (el) {
+          el.style.cursor = 'pointer';
+          el.addEventListener('click', () => {
+            console.log(row.id);
+            router.push({
+              name: 'Match details',
+              params: { id: `${row.id.slice(14)}` },
+            });
+          });
+        });
+      } else {
+        toast.error('Cannot go to match page', {
+          toastClassName: 'custom_toast',
+          timeout: 2000,
+        });
+      }
+    }
+
     return {
       key,
       toast,
@@ -161,5 +160,3 @@ export default {
   },
 };
 </script>
-
-<style lang="scss" src="./GamesWidget.scss" scoped />

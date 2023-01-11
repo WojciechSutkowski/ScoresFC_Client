@@ -1,115 +1,124 @@
 <template>
-  <div class="main-container league" style="font-size: 4rem">
-    <header class="league__header">
-      <div class="league__header__info">
-        <img class="league__header__logo" :src="league.league.logo" />
-        <div class="league__header__names">
+  <div class="main-container league font-36">
+    <main class="league__container">
+      <div class="league__favourites" v-if="useAuthService.userIsAuthorized">
+        <img class="league__favourites__star" />
+        <p class="font-24">Add to favourites</p>
+      </div>
+      <div class="league__info">
+        <img
+          class="league__info__logo"
+          :src="league.league.logo"
+          alt="League logo"
+        />
+        <div class="league__info__names">
           <p>
             {{ league.league.name }}
           </p>
-          <div class="league__header__country">
+          <div class="league__info__country font-24">
             <img
-              class="league__header__country--flag"
+              class="league__info__country--flag"
               :src="league.country.flag"
+              alt="League country flag"
             />
-            <p class="league__header__country--name">
+            <p class="league__info__country--name">
               {{ league.country.name }}
             </p>
           </div>
         </div>
-      </div>
-      <div class="league__header__container">
-        <div class="league__header__season">
-          <p>Season {{ league.seasons[0].start.slice(0, 4) }}</p>
-          <p
-            v-if="
-              league.seasons[0].start.slice(0, 4) !==
-              league.seasons[0].end.slice(0, 4)
-            "
-          >
-            /{{ league.seasons[0].end.slice(0, 4) }}
-          </p>
+        <div class="league__info__season">
+          <div class="league__info__season--active font-24">
+            <p>Season {{ league.seasons[0].start.slice(0, 4) }}</p>
+            <p
+              v-if="
+                league.seasons[0].start.slice(0, 4) !==
+                league.seasons[0].end.slice(0, 4)
+              "
+            >
+              /{{ league.seasons[0].end.slice(0, 4) }}
+            </p>
+          </div>
+          <button class="button button__dark" @click="goToSeasonsList">
+            Archive seasons
+          </button>
         </div>
-        <button class="button__light" @click="handleSeasonsRoute">
-          Archive seasons
-        </button>
       </div>
-    </header>
-    <main class="league__main">
-      <div class="league__main__submenu">
-        <button @click="handleGamesRoute('finished')" class="button__light">
+      <div class="league__submenu">
+        <button @click="goToStandingsPage" class="button button__dark">
+          Standings
+        </button>
+        <button @click="goToTeamsList" class="button button__dark">
+          Teams
+        </button>
+        <button @click="goToGamesList('finished')" class="button button__dark">
           Finished
         </button>
-        <button @click="handleGamesRoute('live')" class="button__light">
+        <button @click="goToGamesList('live')" class="button button__dark">
           Live
         </button>
-        <button @click="handleGamesRoute('not-started')" class="button__light">
+        <button
+          @click="goToGamesList('not-started')"
+          class="button button__dark"
+        >
           Not started
         </button>
       </div>
-
-      <div
-        class="matches"
-        style="min-height: 20rem; min-width: 20rem; background-color: red"
-      >
-        Last 10 matches
-      </div>
-
-      <standings-widget
-        class="center widget-80"
-        :data-league="league.league.id"
-        :data-season="league.seasons[0].year"
-      ></standings-widget>
     </main>
   </div>
 </template>
 
 <script>
-import StandingsWidget from '@/widgets/Standings/StandingsWidget.vue';
-import {
-  onBeforeMount,
-  // computed
-} from 'vue';
-import { useLeagues } from '@/store';
-import { useRoute, useRouter } from 'vue-router';
-import { leagueDetails } from '@/mocks/leagueDetails';
-
+import { onBeforeMount, onUpdated, computed } from 'vue';
+import router from '@/router';
+import { useRoute } from 'vue-router';
+import { useAuth, useFavourites, useLeagues } from '@/store';
 export default {
   setup() {
-    const router = useRouter();
     const route = useRoute();
-    console.log(router);
-    console.log(route.params);
+    const useAuthService = useAuth();
+    const useFavouritesService = useFavourites();
     const useLeagueService = useLeagues();
+    let league;
+
+    league = computed(() => useLeagueService.league);
 
     onBeforeMount(async () => {
+      await useFavouritesService.getFavourites();
       await useLeagueService.getLeague();
     });
 
-    // const league = computed(() => useLeagueService.league);
-    const league = leagueDetails;
-
-    console.log(league);
-
-    const handleSeasonsRoute = () => {
+    const goToSeasonsList = () => {
       const params = {
-        country: route.params.country,
-        name: route.params.name,
+        id: route.params.id,
       };
 
       router.push({
         name: 'League seasons',
         params: {
-          country: params.country,
-          name: params.name,
+          id: params.id,
         },
       });
     };
 
-    const handleGamesRoute = (type) => {
+    const goToTeamsList = () => {
       const params = {
-        leagueId: league.league.id,
-        season: league.seasons[0].year,
+        id: route.params.id,
+        season: route.params.season,
+      };
+
+      router.push({
+        name: 'League teams',
+        params: {
+          id: params.id,
+          season: params.season,
+        },
+      });
+    };
+
+    const goToGamesList = (type) => {
+      const params = {
+        leagueId: route.params.id,
+        season: route.params.season,
         type: type,
       };
 
@@ -123,14 +132,84 @@ export default {
       });
     };
 
+    const goToStandingsPage = () => {
+      const params = {
+        leagueId: route.params.id,
+        season: route.params.season,
+      };
+
+      router.push({
+        name: 'League standings',
+        params: {
+          id: params.leagueId,
+          season: params.season,
+        },
+      });
+    };
+
+    setTimeout(
+      onUpdated(async () => {
+        const fav = document.querySelector('.league__favourites__star');
+        const favourites = useFavouritesService.favourites;
+        const leagues = favourites.leagues;
+        if (useAuthService.userIsAuthorized) {
+          let isFav;
+
+          const setStar = () => {
+            fav.setAttribute('src', require('@/assets/icons/star_fill.png'));
+            fav.style = 'max-height: 7.2rem';
+            isFav = true;
+          };
+
+          const unsetStar = () => {
+            fav.setAttribute('src', require('@/assets/icons/star.png'));
+            fav.style = 'max-height: 7.2rem';
+            isFav = false;
+          };
+
+          if (leagues.includes(route.params.id)) {
+            setStar();
+          } else {
+            unsetStar();
+          }
+
+          fav.onclick = function () {
+            if (isFav) {
+              useFavouritesService.deleteLeague(route.params.id);
+              unsetStar();
+            } else {
+              useFavouritesService.addLeague(route.params.id);
+              setStar();
+            }
+          };
+        }
+      }),
+      1000
+    );
+
     return {
+      route,
       league,
-      handleSeasonsRoute,
-      handleGamesRoute,
+      goToSeasonsList,
+      goToTeamsList,
+      goToGamesList,
+      goToStandingsPage,
+      useAuthService,
     };
   },
-  components: {
-    StandingsWidget,
+  beforeRouteEnter(to, from) {
+    if (
+      to.path !== from.path &&
+      to.name === 'League details' &&
+      (from.path !== '/' || from.name === 'Home')
+    ) {
+      window.location.replace(to.path);
+    }
+  },
+  beforeRouteUpdate(to, from) {
+    if (to.path !== from.path && to.name === 'League details') {
+      window.location.replace(to.path);
+    }
   },
 };
 </script>

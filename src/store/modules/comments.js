@@ -10,6 +10,7 @@ export const useComments = defineStore('comments', {
     async getComments() {
       try {
         const route = useRoute();
+
         const params = {
           gameId: route.params.id,
         };
@@ -18,15 +19,13 @@ export const useComments = defineStore('comments', {
           `http://localhost:5000/comments/${params.gameId}`
         );
 
-        console.log(res);
-
         let replacement = [];
 
-        for (let i = 0; i < res.data.allComments.length; i++) {
+        for (let i = 0; i < res.data.gameComments.length; i++) {
           replacement[i] = {
-            comment: res.data.allComments[i].comment,
-            username: res.data.allComments[i].username,
-            date: res.data.allComments[i].createdAt
+            comment: res.data.gameComments[i].comment,
+            username: res.data.gameComments[i].username,
+            date: res.data.gameComments[i].createdAt
               .replace(/T/, ' ')
               .replace(/\..+/, ''),
           };
@@ -41,13 +40,25 @@ export const useComments = defineStore('comments', {
     },
     async setComment(comment, route) {
       try {
+        const token = localStorage.getItem('token');
+        const parsedToken = JSON.parse(token);
+        const bearer = parsedToken.token.bearer;
+        const username = parsedToken.token.username;
+
         const params = {
-          username: localStorage.getItem('username'),
+          username: username,
           gameId: route.params.id,
           comment: comment,
         };
+        const headers = { Authorization: bearer };
 
-        await axios.post('http://localhost:5000/comments/create', params);
+        await axios.post(
+          'http://localhost:5000/comments/create',
+          { params },
+          {
+            headers,
+          }
+        );
       } catch (err) {
         console.log(err);
       }

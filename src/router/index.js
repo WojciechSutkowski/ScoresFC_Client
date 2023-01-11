@@ -1,6 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import { routes } from './routes';
-// import store from '@/store/index';
 import { useAuth } from '@/store';
 
 const router = createRouter({
@@ -10,9 +9,7 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   const useAuthService = useAuth();
-  // console.log(store._state.data.auth.userIsAuthorized);
-  // console.log(to);
-  // Refactor
+
   let authCheck = null;
   let adminCheck = null;
 

@@ -10,8 +10,6 @@ export const useAdmin = defineStore('admin', {
       try {
         const res = await axios.get('http://localhost:5000/comments/');
 
-        console.log(res);
-
         let replacement = [];
 
         for (let i = 0; i < res.data.allComments.length; i++) {
@@ -31,14 +29,24 @@ export const useAdmin = defineStore('admin', {
     },
     async deleteComment(id) {
       try {
+        const token = localStorage.getItem('token');
+        const parsedToken = JSON.parse(token);
+        const bearer = parsedToken.token.bearer;
+        const username = parsedToken.token.username;
+
         const params = {
-          username: localStorage.getItem('username'),
+          username: username,
           _id: id,
         };
+        const headers = { Authorization: bearer };
 
-        await axios.delete('http://localhost:5000/comments/delete', {
-          params,
-        });
+        await axios.post(
+          'http://localhost:5000/comments/delete',
+          { params },
+          {
+            headers,
+          }
+        );
       } catch (err) {
         console.log(err);
       }

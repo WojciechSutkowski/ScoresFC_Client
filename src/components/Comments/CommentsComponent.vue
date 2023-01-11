@@ -1,6 +1,6 @@
 <template>
   <div class="comment center">
-    <div class="comment__login" v-if="!isAuthorized">
+    <div class="comment__login info font-24" v-if="!isAuthorized">
       <p>Login to add comment</p>
     </div>
     <div class="comment__new" v-if="isAuthorized">
@@ -13,7 +13,7 @@
         required
       />
       <button
-        class="comment__new__btn button__light"
+        class="button button__light"
         type="primary"
         @click="handleComment"
       >
@@ -41,16 +41,16 @@
 </template>
 
 <script>
-import { ref, computed, onBeforeMount } from 'vue';
+import { onBeforeMount, computed, ref } from 'vue';
 import { useRoute } from 'vue-router';
-import { useAuth } from '@/store';
-import { useComments } from '@/store';
+import { useAuth, useComments } from '@/store';
 export default {
   setup() {
-    const route = useRoute();
     const comment = ref('');
+    const route = useRoute();
     const useAuthService = useAuth();
     const useCommentsService = useComments();
+
     const isAuthorized = computed(() => useAuthService.userIsAuthorized);
     const comments = computed(() => useCommentsService.comments);
 
@@ -58,14 +58,14 @@ export default {
       await useCommentsService.getComments();
     });
 
-    function handleComment(e) {
+    const handleComment = (e) => {
       e.preventDefault();
 
       useCommentsService.setComment(comment.value, route);
       location.reload();
-    }
+    };
 
-    return { handleComment, comments, comment, isAuthorized };
+    return { comment, comments, isAuthorized, handleComment };
   },
 };
 </script>

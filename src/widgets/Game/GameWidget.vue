@@ -20,5 +20,3 @@ export default {
   },
 };
 </script>
-
-<style lang="scss" src="./GameWidget.scss" scoped />

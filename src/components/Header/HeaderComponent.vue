@@ -3,7 +3,7 @@
     <img
       class="header__logo"
       src="@/assets/logo/full/Full_v1.svg"
-      alt="logo"
+      alt="ScoresFC logo"
       @click="handleLogo"
     />
 
@@ -20,7 +20,11 @@
       </select>
     </div>
 
-    <button class="button__light" @click="handleLogin" v-if="!isAuthorized">
+    <button
+      class="button button__light"
+      @click="handleLogin"
+      v-if="!isAuthorized"
+    >
       Login
     </button>
 
@@ -34,12 +38,12 @@
           {{ username }}
         </p>
       </div>
-      <ul class="dropdown_profile" v-if="isProfileDropdownOpen">
+      <ul class="header__profile__dropdown" v-if="isProfileDropdownOpen">
         <li>
           <router-link to="/profile"><p>Profile</p></router-link>
         </li>
-        <li>
-          <p @click="handleLogout">Logout</p>
+        <li @click="handleLogout">
+          <p>Logout</p>
         </li>
       </ul>
     </div>
@@ -75,7 +79,7 @@
               v-for="(country, index) in allContinents[3]"
               :key="index"
             >
-              <li class="dropdown_countries">
+              <li class="dropdown_country">
                 {{ country }}
               </li>
             </router-link>
@@ -94,7 +98,7 @@
               v-for="(country, index) in allContinents[4]"
               :key="index"
             >
-              <li class="dropdown_countries">
+              <li class="dropdown_country">
                 {{ country }}
               </li>
             </router-link>
@@ -113,7 +117,7 @@
               v-for="(country, index) in allContinents[5]"
               :key="index"
             >
-              <li class="dropdown_countries">
+              <li class="dropdown_country">
                 {{ country }}
               </li>
             </router-link>
@@ -132,7 +136,7 @@
               v-for="(country, index) in allContinents[1]"
               :key="index"
             >
-              <li class="dropdown_countries">
+              <li class="dropdown_country">
                 {{ country }}
               </li>
             </router-link>
@@ -151,7 +155,7 @@
               v-for="(country, index) in allContinents[2]"
               :key="index"
             >
-              <li class="dropdown_countries">
+              <li class="dropdown_country">
                 {{ country }}
               </li>
             </router-link>
@@ -163,28 +167,32 @@
 </template>
 
 <script>
-import { ref, computed } from 'vue';
-import { useRouter } from 'vue-router';
-import { allContinents } from '@/data/index';
+import { computed, ref } from 'vue';
+import router from '@/router';
 import { useAuth } from '@/store';
-
+import { allContinents } from '@/data/index';
 export default {
   setup() {
-    const router = useRouter();
+    const isProfileClicked = ref(false);
+    const isProfileDropdownOpen = ref(false);
     const useAuthService = useAuth();
 
     const isAuthorized = computed(() => useAuthService.userIsAuthorized);
-    const isProfileDropdownOpen = ref(false);
-    const isProfileClicked = ref(false);
 
-    const username = localStorage.getItem('username');
+    let username;
+    const token = localStorage.getItem('token');
+    const parsedToken = JSON.parse(token);
+    if (token !== null) {
+      username = parsedToken.token.username;
+    } else {
+      username = '';
+    }
 
     const handleLogo = () => router.push('/');
 
     const handleLogin = () => router.push('/login');
 
     const handleLogout = () => {
-      useAuthService.setToken(false);
       localStorage.clear();
       window.location.reload();
     };
@@ -205,15 +213,15 @@ export default {
     };
 
     return {
+      username,
+      allContinents,
+      isProfileClicked,
+      isProfileDropdownOpen,
+      isAuthorized,
+      handleLogo,
       handleLogin,
       handleLogout,
-      username,
-      isProfileDropdownOpen,
-      isProfileClicked,
-      allContinents,
-      handleLogo,
       handleSearch,
-      isAuthorized,
     };
   },
 };

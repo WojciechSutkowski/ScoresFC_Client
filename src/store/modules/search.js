@@ -1,6 +1,6 @@
-import { useRoute } from 'vue-router';
 import axios from 'axios';
 import { defineStore } from 'pinia';
+import { useRoute } from 'vue-router';
 
 export const useSearch = defineStore('search', {
   state: () => ({
@@ -11,6 +11,7 @@ export const useSearch = defineStore('search', {
     async getTeams() {
       try {
         const route = useRoute();
+
         const params = {
           search: route.params.input,
         };
@@ -36,6 +37,7 @@ export const useSearch = defineStore('search', {
     async getLeagues() {
       try {
         const route = useRoute();
+
         const params = {
           search: route.params.input,
         };
@@ -43,8 +45,6 @@ export const useSearch = defineStore('search', {
         const res = await axios.get(
           `http://localhost:5000/search/league/${params.search}`
         );
-
-        console.log(res);
 
         let replacement = [];
 
@@ -55,8 +55,6 @@ export const useSearch = defineStore('search', {
             seasons: res.data[i].seasons,
           };
         }
-
-        console.log(replacement);
 
         this.leagues = replacement;
       } catch (err) {

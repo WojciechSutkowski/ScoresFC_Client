@@ -7,13 +7,14 @@
       </p>
     </div>
     <div v-if="isAdmin">
-      <ul class="comment__added__list">
+      <p class="info font-30">ADMIN PANEL</p>
+      <ul class="comment__admin__list">
         <li
-          class="comment__added__item"
+          class="comment__admin__item"
           v-for="comment in comments"
           :key="comment._id"
         >
-          <div class="comment__item">
+          <div class="admin__comment__content">
             <div class="comment__item__info">
               <p>Author: {{ comment.username }}</p>
               <p>{{ comment.date }}</p>
@@ -21,7 +22,7 @@
             <p class="comment__item__content">{{ comment.comment }}</p>
           </div>
           <button
-            class="comment__delete__button button__light"
+            class="comment__delete__button button"
             @click="handleDelete(comment.id)"
           >
             DELETE
@@ -33,9 +34,8 @@
 </template>
 
 <script>
-import { useAuth } from '@/store';
-import { useAdmin } from '@/store';
 import { onBeforeMount, computed } from 'vue';
+import { useAdmin, useAuth } from '@/store';
 export default {
   setup() {
     const useAdminService = useAdmin();

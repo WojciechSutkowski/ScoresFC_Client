@@ -1,80 +1,76 @@
 <template>
   <div class="main-container team">
-    <img class="fav" v-if="useAuthService.userIsAuthorized" />
-    <header class="team__header"></header>
-    <div class="team__info">
-      <img :src="team.response[0].team.logo" />
-      <p>{{ team.response[0].team.name }}</p>
-      <p>{{ team.response[0].team.founded }}</p>
-      <p>{{ team.response[0].team.country }}</p>
-    </div>
-    <aside>
-      <h2>{{ team.response[0].venue.name }}</h2>
-      <p>Capacity: {{ team.response[0].venue.capacity }}</p>
-      <img :src="team.response[0].venue.image" />
+    <header class="team__header info">
+      <div
+        class="team__header__favourites"
+        v-if="useAuthService.userIsAuthorized"
+      >
+        <img class="team__header__star" />
+        <p class="font-24">Add to favourites</p>
+      </div>
+      <img class="team__header__logo" :src="team.team.logo" alt="Team logo" />
+      <div class="team__header__info">
+        <p class="team__header__info--name">{{ team.team.name }}</p>
+        <p class="team__header__info--date">
+          Founded in {{ team.team.founded }}
+        </p>
+        <p class="team__header__info--country">
+          {{ team.team.country }}
+        </p>
+      </div>
+      <div class="team__submenu">
+        <button class="button button__dark" @click="goToSquadPage">
+          Squad
+        </button>
+        <button class="button button__dark" @click="goToTeamGamesPage">
+          All games
+        </button>
+      </div>
+    </header>
+    <aside class="team__stadium info">
+      <h2 v-if="team.venue.capacity === null">No stadium data</h2>
+      <h2 class="font-24">{{ team.venue.name }}</h2>
+      <p class="team__stadium__capacity" v-if="team.venue.capacity !== null">
+        Capacity: {{ team.venue.capacity }}
+      </p>
+      <img
+        class="team__stadium__image"
+        :src="team.venue.image"
+        alt="Stadium image"
+      />
     </aside>
 
-    <button @click="handleSquadRoute">Squad</button>
-    <button @click="handleGamesRoute">Games</button>
-
-    <last-games-component />
-    <next-games-component />
+    <last-games-component class="team__last" />
+    <next-games-component class="team__next" />
   </div>
 </template>
 
 <script>
-import { onMounted, onBeforeMount } from 'vue';
-import LastGamesComponent from '@/components/TeamGames/Last/LastGamesComponent.vue';
-import NextGamesComponent from '@/components/TeamGames/Next/NextGamesComponent.vue';
-import { useRoute, useRouter } from 'vue-router';
-import { useFavourites, useAuth } from '@/store';
-import { teamDetails } from '@/mocks/teamDetails';
+import LastGamesComponent from '@/components/Games/Last/LastGamesComponent.vue';
+import NextGamesComponent from '@/components/Games/Next/NextGamesComponent.vue';
+import { onBeforeMount, onMounted, computed } from 'vue';
+import router from '@/router';
+import { useRoute } from 'vue-router';
+import { useAuth, useFavourites, useTeams } from '@/store';
 export default {
   setup() {
-    const team = teamDetails;
     const route = useRoute();
-    const router = useRouter();
-    const useFavouritesService = useFavourites();
     const useAuthService = useAuth();
+    const useFavouritesService = useFavourites();
+    const useTeamsService = useTeams();
 
-    const handleSquadRoute = () => {
-      const params = {
-        teamId: route.params.id,
-      };
-
-      router.push({
-        name: 'Team squad',
-        params: {
-          id: params.teamId,
-        },
-      });
-    };
-
-    const handleGamesRoute = () => {
-      const params = {
-        teamId: route.params.id,
-      };
-
-      router.push({
-        name: 'Team games',
-        params: {
-          id: params.teamId,
-        },
-      });
-    };
+    const team = computed(() => useTeamsService.team);
 
     onBeforeMount(async () => {
       await useFavouritesService.getFavourites();
+      await useTeamsService.getTeamById(route.params.id);
     });
+
     setTimeout(
       onMounted(async () => {
-        const fav = document.querySelector('.fav');
-        // const star = document.createElement('img');
-        // favBtn.appendChild(star);
-        // console.log(favourites.value.teams);
-        console.log(fav);
+        const fav = document.querySelector('.team__header__star');
+
         const favourites = useFavouritesService.favourites;
-        // console.log(favourites.teams);
         const teams = favourites.teams;
         console.log(teams);
         if (useAuthService.userIsAuthorized) {
@@ -82,15 +78,13 @@ export default {
 
           const setStar = () => {
             fav.setAttribute('src', require('@/assets/icons/star_fill.png'));
-            fav.style = 'height: 2rem';
-            // favBtn.style.backgroundColor = 'red';
+            fav.style = 'max-height: 7.2rem';
             isFav = true;
           };
 
           const unsetStar = () => {
             fav.setAttribute('src', require('@/assets/icons/star.png'));
-            fav.style = 'height: 2rem';
-            // favBtn.style.backgroundColor = 'blue';
+            fav.style = 'max-height: 7.2rem';
             isFav = false;
           };
 
@@ -114,10 +108,36 @@ export default {
       1000
     );
 
-    return { team, useAuthService, handleSquadRoute, handleGamesRoute };
+    const goToSquadPage = () => {
+      const params = {
+        teamId: route.params.id,
+      };
+
+      router.push({
+        name: 'Team squad',
+        params: {
+          id: params.teamId,
+        },
+      });
+    };
+
+    const goToTeamGamesPage = () => {
+      const params = {
+        teamId: route.params.id,
+      };
+
+      router.push({
+        name: 'Team games',
+        params: {
+          id: params.teamId,
+        },
+      });
+    };
+
+    return { team, useAuthService, goToSquadPage, goToTeamGamesPage };
   },
   components: { LastGamesComponent, NextGamesComponent },
 };
 </script>
 
-<styles lang="scss" src="./TeamDetailsView.scss" scoped />
+<styless lang="scss" src="./TeamDetailsView.scss" scoped />

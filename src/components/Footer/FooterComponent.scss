@@ -1,24 +1,22 @@
 .footer {
-  // bottom: 0;
-  min-height: 22vh;
   width: 100%;
+  min-height: 22vh;
   padding: 2.4rem 32rem 2.4rem;
-  background-color: var(--color-accent-dark);
+  background-color: var(--color-green-dark);
   text-align: center;
 
   &__grid {
     display: grid;
     row-gap: 1.2rem;
     column-gap: 6.4rem;
-    grid-template-columns: 1.5fr 1.5fr 1.5fr;
     grid-template-rows: 1fr auto;
+    grid-template-columns: 1.5fr 1.5fr 1.5fr;
   }
 
   &__logo {
+    width: 100%;
     display: flex;
     flex-direction: column;
-    display: flex;
-    width: 100%;
   }
 
   nav {
@@ -28,38 +26,37 @@
   }
 
   &__nav-header {
+    margin-bottom: 1.2rem;
     font-size: 2.4rem;
     font-weight: 500;
-    margin-bottom: 1.2rem;
     color: var(--color-gray);
   }
 
   &__nav-list {
-    list-style: none;
     display: flex;
     flex-direction: column;
     gap: 1rem;
+    list-style: none;
   }
 
   &__nav-link:link,
   &__nav-link:visited {
-    text-decoration: none;
     font-size: 1.6rem;
     color: var(--color-gray);
+    text-decoration: none;
     transition: all 0.3s;
   }
 
   &__nav-link:hover,
   &__nav-link:active {
-    color: var(--color-accent-light);
+    color: var(--color-gold);
   }
 
   &__copyright {
+    color: var(--color-gray);
+    font-size: 1.4rem;
     grid-row: 3;
     grid-column: 1 / -1;
     text-align: center;
-    color: var(--color-gray);
-    font-size: 1.4rem;
-    padding-bottom: 2rem;
   }
 }

@@ -10,6 +10,9 @@ export const useLeagueGames = defineStore('leagueGames', {
     async getGames() {
       try {
         const route = useRoute();
+
+        console.log(route.params);
+
         const params = {
           leagueId: route.params.id,
           season: route.params.season,
@@ -31,8 +34,6 @@ export const useLeagueGames = defineStore('leagueGames', {
             teams: res.data[i].teams,
           };
         }
-
-        console.log(replacement);
 
         this.games = replacement;
       } catch (err) {

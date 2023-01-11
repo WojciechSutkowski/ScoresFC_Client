@@ -1,12 +1,18 @@
 <template>
-  <div class="main-container" style="font-size: 4rem">
+  <div class="main-container font-24">
     <p class="info">{{ route.params.country }}</p>
     <ul class="list">
       <li
         v-for="league in leagues"
         :key="league.leagueName"
         class="list__item"
-        @click="goToLeaguePage(league.leagueName)"
+        @click="
+          goToLeaguePage(
+            league.leagueId,
+            league.leagueSeasons[league.leagueSeasons.length - 1].year,
+            league
+          )
+        "
       >
         {{ league.leagueName }}
       </li>
@@ -15,54 +21,22 @@
 </template>
 
 <script>
+import { onBeforeMount, computed } from 'vue';
 import { useRoute } from 'vue-router';
-import {
-  onBeforeMount,
-  // computed
-} from 'vue';
-import router from '@/router';
 import { useLeagues } from '@/store';
-import { countryLeagues } from '@/mocks/countryLeagues';
+import { goToLeaguePage } from '@/router/helpers';
 export default {
   setup() {
     const route = useRoute();
-
     const useLeagueService = useLeagues();
+
+    const leagues = computed(() => useLeagueService.countryLeagues);
 
     onBeforeMount(async () => {
       await useLeagueService.getCountryLeagues();
     });
 
-    // const leagues = computed(() => useLeagueService.countryLeagues);
-
-    const leagues = countryLeagues;
-
-    console.log(leagues);
-
-    function goToLeaguePage(leagueName) {
-      const params = {
-        country: route.params.country,
-        league: leagueName,
-      };
-
-      router.push({
-        name: 'League details',
-        params: {
-          country: params.country,
-          name: params.league,
-          current: true,
-        },
-      });
-
-      // setTimeout(() => {
-      //   location.reload();
-      // }, 500);
-    }
-    // window.location.reload();
-
-    return { leagues, route, goToLeaguePage };
+    return { route, leagues, goToLeaguePage };
   },
 };
 </script>
-
-<style lang="scss"></style>

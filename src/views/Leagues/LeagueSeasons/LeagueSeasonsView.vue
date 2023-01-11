@@ -1,12 +1,12 @@
 <template>
-  <div class="main-container" style="font-size: 4rem">
-    <h2 class="seasons__league">{{ seasons.league.name }}</h2>
+  <div class="main-container font-24">
+    <h2 class="info font-36">{{ seasons[0].league.name }}</h2>
     <ul class="list">
       <li
-        v-for="season in seasons.seasons.reverse()"
+        v-for="season in seasons[0].seasons.reverse()"
         :key="season"
         class="list__item"
-        @click="goToLeagueSeason(season.year)"
+        @click="goToLeaguePage(seasons[0].league.id, season.year)"
       >
         <p>{{ season.start.slice(0, 4) }}</p>
         <p v-if="season.start.slice(0, 4) !== season.end.slice(0, 4)">
@@ -18,52 +18,20 @@
 </template>
 
 <script>
-// import { useRoute } from 'vue-router';
+import { onBeforeMount, computed } from 'vue';
 import { useLeagues } from '@/store';
-import {
-  onBeforeMount,
-  // computed
-} from 'vue';
-import { leagueSeasons } from '@/mocks/leagueSeasons';
-import { useRoute, useRouter } from 'vue-router';
+import { goToLeaguePage } from '@/router/helpers';
 export default {
   setup() {
     const useLeagueService = useLeagues();
-    const router = useRouter();
-    const route = useRoute();
-    console.log(router);
-    console.log(route.params);
 
     onBeforeMount(async () => {
       await useLeagueService.getSeasons();
     });
 
-    // const seasons = computed(() => useLeagueService.seasons);
-    const seasons = leagueSeasons;
+    const seasons = computed(() => useLeagueService.seasons);
 
-    console.log(seasons);
-
-    const goToLeagueSeason = (season) => {
-      console.log(`${season}`);
-      const params = {
-        country: route.params.country,
-        name: route.params.name,
-        season: season,
-      };
-
-      router.push({
-        name: 'League details',
-        params: {
-          country: params.country,
-          name: params.name,
-          season: params.season,
-        },
-      });
-    };
-
-    return { seasons, goToLeagueSeason };
+    return { seasons, goToLeaguePage };
   },
 };
 </script>
-
-<styl lang="scss" src="./LeagueSeasonsView.scss" scoped />

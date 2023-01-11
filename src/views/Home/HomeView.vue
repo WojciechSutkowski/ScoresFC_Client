@@ -13,20 +13,16 @@
 
     <games-widget class="center widget-80" :data-date="date"></games-widget>
   </main>
-  <button @click="scrollToTop" class="scrollToTop">Top</button>
 </template>
 
 <script>
 import GamesWidget from '@/widgets/Games/GamesWidget.vue';
-import Datepicker from '@vuepic/vue-datepicker';
+import { ref } from 'vue';
 import router from '@/router';
 import { useRoute } from 'vue-router';
-import {
-  ref,
-  // , onBeforeMount, getCurrentInstance
-} from 'vue';
-import '@vuepic/vue-datepicker/dist/main.css';
 import { format } from '@/utils/format';
+import Datepicker from '@vuepic/vue-datepicker';
+import '@vuepic/vue-datepicker/dist/main.css';
 
 export default {
   setup() {
@@ -40,30 +36,7 @@ export default {
       });
     };
 
-    const scrollBtn = document.getElementsByClassName('scrollToTop');
-    function scrollFunction() {
-      if (
-        document.body.scrollTop > 20 ||
-        document.documentElement.scrollTop > 20
-      ) {
-        scrollBtn[0].style.display = 'block';
-      } else {
-        scrollBtn[0].style.display = 'none';
-      }
-    }
-
-    window.onscroll = function () {
-      scrollFunction();
-    };
-
-    // When the user clicks on the button, scroll to the top of the document
-    function scrollToTop() {
-      console.log('clicked');
-      document.body.scrollTop = 0; // For Safari
-      document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
-    }
-
-    return { date, format, handleDate, route, scrollToTop };
+    return { date, route, handleDate, format };
   },
   beforeRouteEnter(to, from) {
     if (to.path !== from.path && to.name === 'Home' && from.path !== '/') {

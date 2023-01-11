@@ -1,6 +1,6 @@
 <template>
-  <div class="main-container register">
-    <form class="register__form">
+  <div class="main-container user">
+    <form class="user__form">
       <h1>Register to continue</h1>
       <input
         type="text"
@@ -18,8 +18,14 @@
         required
       />
 
-      <div class="register__buttons">
-        <button type="primary" @click="handleRegister">Sign Up</button>
+      <div class="user__buttons">
+        <button
+          class="button button__light"
+          type="primary"
+          @click="handleRegister"
+        >
+          Sign Up
+        </button>
         <p>
           <span> Already have an account? </span>
           <router-link to="/login">Login</router-link>
@@ -34,8 +40,9 @@
 
 <script>
 import axios from 'axios';
-import router from '@/router/index';
 import { ref } from 'vue';
+import router from '@/router';
+import { useToast } from 'vue-toastification';
 export default {
   setup() {
     const firstname = ref('');
@@ -43,6 +50,7 @@ export default {
     const email = ref('');
     const username = ref('');
     const password = ref('');
+    const toast = useToast();
 
     const handleRegister = (e) => {
       e.preventDefault();
@@ -58,17 +66,24 @@ export default {
       axios.post('http://localhost:5000/users/register-user', newUser).then(
         (res) => {
           if (res.status == '201') {
-            console.log('Signed up correctly');
+            toast.success('Registered correctly', {
+              toastClassName: 'custom_toast',
+              timeout: 1000,
+            });
             router.push({ path: '/' });
-            setTimeout(() => {
-              location.reload();
-            }, 500);
-            alert('Zarejestrowano');
+          } else if (res.status === '400') {
+            toast.error('Email or username are already taken', {
+              toastClassName: 'custom_toast',
+              timeout: 2000,
+            });
           }
         },
         (err) => {
-          console.log(newUser);
           console.log(err.response);
+          toast.error(`${err.response.data.message}`, {
+            toastClassName: 'custom_toast',
+            timeout: 2000,
+          });
         }
       );
     };
@@ -77,5 +92,3 @@ export default {
   },
 };
 </script>
-
-<style lang="scss" src="./RegisterView.scss" scoped />

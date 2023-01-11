@@ -1,6 +1,7 @@
 <template>
-  <div class="main-container login">
-    <form class="login__form">
+  <div class="main-container user">
+    <form class="user__form">
+      <h1 v-if="router.currentRoute.value.path === '/login-admin'">ADMIN</h1>
       <h1>Login to continue</h1>
       <input type="text" placeholder="Username" v-model="username" required />
       <input
@@ -10,9 +11,15 @@
         required
       />
 
-      <div class="login__buttons">
-        <button type="primary" @click="handleLogin">Login</button>
-        <p>
+      <div class="user__buttons">
+        <button
+          class="button button__light"
+          type="primary"
+          @click="handleLogin"
+        >
+          Login
+        </button>
+        <p v-if="router.currentRoute.value.path !== '/login-admin'">
           <span> Don't have an account? </span>
           <router-link to="/register">Register</router-link>
         </p>
@@ -26,22 +33,21 @@
 
 <script>
 import axios from 'axios';
-import router from '@/router/index';
-import { useAuth } from '@/store';
-import { useToast } from 'vue-toastification';
 import { ref } from 'vue';
+import { useAuth } from '@/store';
+import router from '@/router';
+import { useToast } from 'vue-toastification';
 export default {
   setup() {
     const username = ref('');
     const password = ref('');
-
     const useAuthService = useAuth();
     const toast = useToast();
 
-    function handleLogin(e) {
+    const handleLogin = (e) => {
       e.preventDefault();
 
-      let checkUser = {
+      const checkUser = {
         username: username.value,
         password: password.value,
       };
@@ -50,17 +56,20 @@ export default {
         axios.post('http://localhost:5000/users/login-user', checkUser).then(
           (res) => {
             if (res.status == '200') {
-              useAuthService.setUserIsAuthenticated(true);
-              useAuthService.setToken(res.data.token);
-              console.log(useAuthService.token);
+              toast.success('Logged in correctly', {
+                toastClassName: 'custom_toast',
+                timeout: 2000,
+              });
+
               const token = {
                 username: res.data.username,
                 auth: true,
+                bearer: res.data.token,
               };
               localStorage.setItem('token', JSON.stringify({ token }));
-              localStorage.setItem('username', res.data.username);
-              localStorage.setItem('auth', true);
-              router.push({ path: '/' });
+              useAuthService.setUserIsAuthenticated(true);
+
+              router.push({ path: '/profile' });
             }
           },
           (err) => {
@@ -75,20 +84,22 @@ export default {
         axios.post('http://localhost:5000/users/login-admin', checkUser).then(
           (res) => {
             if (res.status == '200') {
-              useAuthService.setUserIsAuthenticated(true);
-              useAuthService.setAdminIsAuthenticated(true);
-              useAuthService.setToken(res.data.token);
-              console.log(useAuthService.token);
+              toast.success('Logged in correctly', {
+                toastClassName: 'custom_toast',
+                timeout: 2000,
+              });
+
               const token = {
                 username: res.data.username,
-                auth: true,
                 admin: true,
+                auth: true,
+                bearer: res.data.token,
               };
               localStorage.setItem('token', JSON.stringify({ token }));
-              localStorage.setItem('username', res.data.username);
-              localStorage.setItem('auth', true);
-              localStorage.setItem('admin', true);
-              router.push({ path: '/admin' });
+              useAuthService.setUserIsAuthenticated(true);
+              useAuthService.setAdminIsAuthenticated(true);
+
+              router.push({ path: '/profile' });
             }
           },
           (err) => {
@@ -100,10 +111,9 @@ export default {
           }
         );
       }
-    }
+    };
 
-    return { username, password, handleLogin, toast };
+    return { username, password, handleLogin, toast, router };
   },
 };
 </script>
-<style lang="scss" src="./LoginView.scss" scoped />

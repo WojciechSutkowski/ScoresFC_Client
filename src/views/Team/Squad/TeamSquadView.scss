@@ -1,0 +1,31 @@
+.squad {
+  flex-direction: row;
+
+  &__player {
+    width: 100%;
+    display: flex;
+    align-items: center;
+
+    &__position {
+      width: 20%;
+      border-right: 1px solid black;
+      text-align: center;
+    }
+
+    &__data {
+      width: 100%;
+      display: flex;
+      align-items: center;
+
+      &--number {
+        width: 10%;
+        text-align: center;
+      }
+      &--photo {
+        max-width: 4.8rem;
+        margin-right: 2.4rem;
+        text-align: center;
+      }
+    }
+  }
+}

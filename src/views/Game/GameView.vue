@@ -1,23 +1,80 @@
 <template>
   <main class="main-container">
+    <div class="center game" v-if="useAuthService.userIsAuthorized">
+      <div>
+        <img class="game__favourites" />
+        <p class="font-24">Add to favourites</p>
+      </div>
+    </div>
     <game-widget class="center widget-80" :data-id="gameId"></game-widget>
     <comments-component />
   </main>
 </template>
 
 <script>
-import GameWidget from '@/widgets/Game/GameWidget.vue';
 import CommentsComponent from '@/components/Comments/CommentsComponent.vue';
+import GameWidget from '@/widgets/Game/GameWidget.vue';
+import { onBeforeMount, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
+import { useAuth, useFavourites } from '@/store';
 
 export default {
   setup() {
     const route = useRoute();
-
+    const useAuthService = useAuth();
+    const useFavouritesService = useFavourites();
     const gameId = route.params.id;
+    let games;
+
+    onBeforeMount(async () => {
+      await useFavouritesService.getFavourites();
+    });
+
+    setTimeout(
+      onMounted(async () => {
+        const fav = document.querySelector('.game__favourites');
+        const favourites = useFavouritesService.favourites;
+        games = favourites.games;
+        if (useAuthService.userIsAuthorized) {
+          let isFav;
+
+          const setStar = () => {
+            fav.setAttribute('src', require('@/assets/icons/star_fill.png'));
+            fav.style = 'max-height: 7.2rem';
+            isFav = true;
+          };
+
+          const unsetStar = () => {
+            fav.setAttribute('src', require('@/assets/icons/star.png'));
+            fav.style = 'max-height: 7.2rem';
+            isFav = false;
+          };
+
+          setTimeout(() => {
+            if (games.includes(route.params.id)) {
+              setStar();
+            } else {
+              unsetStar();
+            }
+          }, 1000);
+
+          fav.onclick = function () {
+            if (isFav) {
+              useFavouritesService.deleteGame(route.params.id);
+              unsetStar();
+            } else {
+              useFavouritesService.addGame(route.params.id);
+              setStar();
+            }
+          };
+        }
+      }),
+      1000
+    );
 
     return {
       gameId,
+      useAuthService,
     };
   },
   beforeRouteEnter(to, from) {
@@ -26,7 +83,6 @@ export default {
       to.name === 'Match details' &&
       (from.path !== '/' || from.name === 'Home')
     ) {
-      console.log(from);
       window.location.replace(to.path);
     }
   },
@@ -36,10 +92,10 @@ export default {
     }
   },
   components: {
-    GameWidget,
     CommentsComponent,
+    GameWidget,
   },
 };
 </script>
 
-<style lang="scss"></style>
+<style lang="scss" src="./GameView.scss"></style>

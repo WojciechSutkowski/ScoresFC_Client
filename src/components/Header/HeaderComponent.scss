@@ -1,51 +1,49 @@
-.hide {
-  display: none;
-}
-
 .header {
-  padding: 2.4rem 32rem 0;
   width: 100%;
   min-height: 18vh;
-  background-color: var(--color-accent-dark);
-
+  padding: 2.4rem 32rem 0;
+  background-color: var(--color-green-dark);
   display: flex;
-  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
+  flex-wrap: wrap;
 
   &__logo {
-    max-width: 300px;
-    width: 100%;
+    max-width: 32rem;
     cursor: pointer;
   }
 
   &__search {
-    border: none;
     height: 3.2rem;
-    border-radius: 9px;
-    background-color: var(--color-gray);
-    color: var(--color-accent-dark);
-    font-size: 1.4rem;
     padding: 0 0.4rem;
+    border: none;
+    border-radius: 6px;
+    font-size: 1.4rem;
+    color: var(--color-green-dark);
+    background-color: var(--color-gray);
   }
 
   &__profile {
     cursor: pointer;
 
     &__bar {
-      display: flex;
-      border: none;
       width: 12.8rem;
       height: 3.2rem;
-      border-radius: 9px;
-      background-color: var(--color-gray);
-      color: var(--color-accent-dark);
-      font-size: 1.4rem;
       padding: 0 0.4rem;
+      border: none;
+      border-radius: 6px;
+      font-size: 1.4rem;
+      color: var(---color-green-dark);
+      background-color: var(--color-gray);
+      display: flex;
 
       p {
-        align-self: center;
         margin: 0 auto;
+        align-self: center;
+      }
+
+      &:hover {
+        background-color: var(--color-gray-dark);
       }
 
       &__active {
@@ -54,29 +52,44 @@
       }
     }
 
-    ul {
+    &__dropdown {
       position: absolute;
-      list-style: none;
-      text-align: center;
-      margin: 0;
       width: 12.8rem;
+      margin: 0;
       display: flex;
       flex-direction: column;
+      text-align: center;
+      list-style: none;
 
       li {
         height: 3.2rem;
-        background-color: var(--color-gray);
-        color: var(--color-accent-dark);
-        font-size: 1.4rem;
         padding: 0.2rem 0.4rem;
+        font-size: 1.4rem;
+        color: var(--color-green-dark);
+        background-color: var(--color-gray);
         display: flex;
-        justify-content: center;
         align-items: center;
+        justify-content: center;
       }
 
       li:last-child {
-        border-bottom-left-radius: 9px;
-        border-bottom-right-radius: 9px;
+        border-bottom-left-radius: 6px;
+        border-bottom-right-radius: 6px;
+      }
+
+      li:hover,
+      li:active {
+        background-color: var(--color-gray-dark);
+      }
+
+      a {
+        text-decoration: none;
+      }
+
+      a:link,
+      a:visited,
+      p {
+        color: var(--color-green-dark);
       }
     }
   }
@@ -86,25 +99,25 @@
     align-self: flex-end;
 
     &__list {
+      width: 100%;
+      margin: 0;
       display: flex;
       flex-direction: row;
       justify-content: space-between;
-      width: 100%;
       gap: 1.6rem;
-      margin: 0;
       list-style: none;
     }
 
     &__item {
-      background-color: var(--color-accent-dark);
-      width: 12rem;
-      height: 3rem;
+      width: 12.8rem;
+      height: 3.2rem;
       border: none;
-      color: var(--color-gray);
       font-size: 1.6rem;
+      color: var(--color-gray);
       font-weight: 500;
-      text-align: center;
+      background-color: var(--color-green-dark);
       cursor: pointer;
+      text-align: center;
     }
 
     &__item:link,
@@ -119,7 +132,7 @@
     &__item:active,
     a:hover,
     a:active {
-      color: var(--color-accent-light);
+      color: var(--color-gold);
     }
 
     &__item:hover {
@@ -131,48 +144,26 @@
 }
 
 .dropdown_list {
-  margin-top: 1rem;
   position: absolute;
-  z-index: 1000;
   left: 0;
   right: 0;
-  margin-left: auto;
-  margin-right: auto;
+  z-index: 1000;
+  max-width: 120rem;
+  margin: 0 auto;
+  margin-top: 1.2rem;
   list-style: none;
   display: none;
-  // display: inline-grid;
   justify-content: center;
-
   grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
-  max-width: 120rem;
 }
 
-.dropdown_profile {
-  margin-top: 1rem;
-  position: relative;
-  z-index: 1000;
-
-  a {
-    text-decoration: none;
-  }
-
-  a:link,
-  a:visited,
-  p {
-    color: var(--color-accent-dark);
-  }
-
-  a:hover,
-  a:active,
-  p:hover,
-  p:active {
-    color: var(--color-accent-light);
-  }
-}
-
-.dropdown_countries {
-  border: solid 1px var(--color-accent-dark);
-  padding: 1.2rem;
+.dropdown_country {
   max-width: 20rem;
-  background-color: var(--dm-color-dark);
+  padding: 1.2rem;
+  border: solid 1px var(--color-green-dark);
+  background-color: var(--color-green-medium);
+
+  &:hover {
+    background-color: var(--color-green-dark);
+  }
 }

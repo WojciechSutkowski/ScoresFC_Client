@@ -1,6 +1,6 @@
-import { useRoute } from 'vue-router';
 import axios from 'axios';
 import { defineStore } from 'pinia';
+import { useRoute } from 'vue-router';
 
 export const useLeagues = defineStore('leagues', {
   state: () => ({
@@ -9,16 +9,15 @@ export const useLeagues = defineStore('leagues', {
     seasons: {},
   }),
   actions: {
-    async getLeague() {
+    async getLeagueById(leagueId) {
       try {
-        const route = useRoute();
         const params = {
-          country: route.params.country,
-          league: route.params.name,
+          id: leagueId,
           current: true,
         };
+
         const res = await axios.get(
-          `http://localhost:5000/league/${params.country}/${params.league}`,
+          `http://localhost:5000/league/${params.id}`,
           { params }
         );
 
@@ -30,24 +29,22 @@ export const useLeagues = defineStore('leagues', {
           seasons,
         };
 
-        console.log(replacement);
         this.league = replacement;
       } catch (err) {
         console.log(err);
       }
     },
-    async getPastSeasonLeague() {
+    async getLeague() {
       try {
         const route = useRoute();
+
         const params = {
-          country: route.params.country,
-          league: route.params.name,
-          current: false,
+          id: route.params.id,
           season: route.params.season,
         };
+
         const res = await axios.get(
-          `http://localhost:5000/league/${params.country}/${params.league}`,
-          { params }
+          `http://localhost:5000/league/${params.id}/${params.season}`
         );
 
         const { country, league, seasons } = res.data[0];
@@ -58,7 +55,6 @@ export const useLeagues = defineStore('leagues', {
           seasons,
         };
 
-        console.log(replacement);
         this.league = replacement;
       } catch (err) {
         console.log(err);
@@ -67,9 +63,11 @@ export const useLeagues = defineStore('leagues', {
     async getCountryLeagues() {
       try {
         const route = useRoute();
+
         const params = {
           country: route.params.country,
         };
+
         const res = await axios.get(
           `http://localhost:5000/leagues/${params.country}`
         );
@@ -78,7 +76,9 @@ export const useLeagues = defineStore('leagues', {
 
         for (let i = 0; i < res.data.length; i++) {
           replacement[i] = {
+            leagueId: res.data[i].league.id,
             leagueName: res.data[i].league.name,
+            leagueSeasons: res.data[i].seasons,
           };
         }
 
@@ -90,28 +90,25 @@ export const useLeagues = defineStore('leagues', {
     async getSeasons() {
       try {
         const route = useRoute();
-        console.log(route.params);
+
         const params = {
-          country: route.params.country,
-          league: route.params.name,
-          current: false,
+          id: route.params.id,
         };
+
         const res = await axios.get(
-          `http://localhost:5000/league/${params.country}/${params.league}`,
-          { params }
+          `http://localhost:5000/league/seasons/${params.id}`
         );
 
-        console.log(res);
+        let replacement = [];
 
-        const { country, league, seasons } = res.data[0];
+        for (let i = 0; i < res.data.length; i++) {
+          replacement[i] = {
+            country: res.data[i].country,
+            league: res.data[i].league,
+            seasons: res.data[i].seasons,
+          };
+        }
 
-        const replacement = {
-          country,
-          league,
-          seasons,
-        };
-
-        console.log(replacement);
         this.seasons = replacement;
       } catch (err) {
         console.log(err);
