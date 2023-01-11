@@ -8,7 +8,7 @@ export const format = (date) => {
     day = date.getDate();
   }
 
-  if (date.getMonth().toString().length === 1) {
+  if ((date.getMonth() + 1).toString().length === 1) {
     month = '0' + (date.getMonth() + 1);
   } else {
     month = date.getMonth() + 1;
