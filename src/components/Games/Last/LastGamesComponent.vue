@@ -57,7 +57,7 @@
 </template>
 
 <script>
-import { onBeforeMount, onMounted, computed } from 'vue';
+import { onBeforeMount, computed } from 'vue';
 import { useAuth, useFavourites, useGame } from '@/store';
 import { goToGamePage } from '@/router/helpers';
 export default {
@@ -73,86 +73,89 @@ export default {
       await useGameService.getLast5Games();
     });
 
-    setTimeout(
-      onMounted(async () => {
-        const leaguesRows = document.querySelectorAll(
-          '.custom__matches__league'
-        );
-        const gamesRows = document.querySelectorAll('.custom__matches__game');
+    const handleFavourites = async () => {
+      const leaguesRows = document.querySelectorAll('.custom__matches__league');
+      const gamesRows = document.querySelectorAll('.custom__matches__game');
 
-        const favourites = useFavouritesService.favourites;
-        const leagues = favourites.leagues;
-        const games = favourites.games;
-        if (useAuthService.userIsAuthorized) {
-          leaguesRows.forEach(function (el) {
-            const fav = el.childNodes[0];
-            let isFav;
-            const setStar = () => {
-              fav.setAttribute('src', require('@/assets/icons/star_fill.png'));
-              fav.style = 'max-height: 2rem';
+      const favourites = useFavouritesService.favourites;
+      const leagues = favourites.leagues;
+      const games = favourites.games;
+      if (useAuthService.userIsAuthorized) {
+        leaguesRows.forEach(function (el) {
+          const fav = el.childNodes[0];
+          let isFav;
+          const setStar = () => {
+            fav.setAttribute('src', require('@/assets/icons/star_fill.png'));
+            fav.style = 'max-height: 2rem';
 
-              isFav = true;
-            };
+            isFav = true;
+          };
 
-            const unsetStar = () => {
-              fav.setAttribute('src', require('@/assets/icons/star.png'));
-              fav.style = 'max-height: 2rem';
-              isFav = false;
-            };
+          const unsetStar = () => {
+            fav.setAttribute('src', require('@/assets/icons/star.png'));
+            fav.style = 'max-height: 2rem';
+            isFav = false;
+          };
 
-            if (leagues.includes(el.id)) {
-              setStar();
-            } else {
+          if (leagues.includes(el.id)) {
+            setStar();
+          } else {
+            unsetStar();
+          }
+
+          fav.onclick = function () {
+            if (isFav) {
+              useFavouritesService.deleteLeague(el.id);
               unsetStar();
-            }
-
-            fav.onclick = function () {
-              if (isFav) {
-                useFavouritesService.deleteLeague(el.id);
-                unsetStar();
-              } else {
-                useFavouritesService.addLeague(el.id);
-                setStar();
-              }
-            };
-          });
-
-          gamesRows.forEach(function (el) {
-            const fav = el.childNodes[0];
-            let isFav;
-
-            const setStar = () => {
-              fav.setAttribute('src', require('@/assets/icons/star_fill.png'));
-              fav.style = 'max-height: 2rem';
-              isFav = true;
-            };
-
-            const unsetStar = () => {
-              fav.setAttribute('src', require('@/assets/icons/star.png'));
-              fav.style = 'max-height: 2rem';
-              isFav = false;
-            };
-
-            if (games.includes(el.id)) {
-              setStar();
             } else {
-              unsetStar();
+              useFavouritesService.addLeague(el.id);
+              setStar();
             }
+          };
+        });
 
-            fav.onclick = function () {
-              if (isFav) {
-                useFavouritesService.deleteGame(el.id);
-                unsetStar();
-              } else {
-                useFavouritesService.addGame(el.id);
-                setStar();
-              }
-            };
-          });
-        }
-      }),
-      1000
-    );
+        gamesRows.forEach(function (el) {
+          const fav = el.childNodes[0];
+          let isFav;
+
+          const setStar = () => {
+            fav.setAttribute('src', require('@/assets/icons/star_fill.png'));
+            fav.style = 'max-height: 2rem';
+            isFav = true;
+          };
+
+          const unsetStar = () => {
+            fav.setAttribute('src', require('@/assets/icons/star.png'));
+            fav.style = 'max-height: 2rem';
+            isFav = false;
+          };
+
+          if (games.includes(el.id)) {
+            setStar();
+          } else {
+            unsetStar();
+          }
+
+          fav.onclick = function () {
+            if (isFav) {
+              useFavouritesService.deleteGame(el.id);
+              unsetStar();
+            } else {
+              useFavouritesService.addGame(el.id);
+              setStar();
+            }
+          };
+        });
+      }
+    };
+
+    const timerFavourites = setInterval(() => {
+      const list = document.getElementsByClassName('custom__matches');
+      if (list.item(0).children.length) {
+        handleFavourites();
+        clearInterval(timerFavourites);
+      }
+    }, 100);
 
     return {
       games,

@@ -2,7 +2,7 @@
   <main class="main-container favourites">
     <ul class="list">
       <h3 class="info">GAMES</h3>
-      <p class="info" v-if="favourites.games.length === 0">
+      <p class="info" v-if="favourites.games?.length === 0">
         No games in favourites
       </p>
       <li v-for="game in games" :key="game">
@@ -55,7 +55,7 @@
 
     <ul class="list">
       <h3 class="info">LEAGUES</h3>
-      <p class="info" v-if="favourites.leagues.length === 0">
+      <p class="info" v-if="favourites.leagues?.length === 0">
         No leagues in favourites
       </p>
       <li
@@ -74,7 +74,7 @@
 
     <ul class="list">
       <h3 class="info">TEAMS</h3>
-      <p class="info" v-if="favourites.teams.length === 0">
+      <p class="info" v-if="favourites.teams?.length === 0">
         No teams in favourites
       </p>
       <li
@@ -95,7 +95,7 @@
 </template>
 
 <script>
-import { onBeforeMount, onMounted, computed, reactive } from 'vue';
+import { onBeforeMount, watch, computed, ref } from 'vue';
 import { useGame, useFavourites, useLeagues, useTeams } from '@/store';
 import { goToGamePage, goToLeaguePage, goToTeamPage } from '@/router/helpers';
 export default {
@@ -107,33 +107,45 @@ export default {
 
     const favourites = computed(() => useFavouritesService.favourites);
 
-    let games = reactive([]);
-    let leagues = reactive([]);
-    let teams = reactive([]);
-    let game, league, team;
+    let games = ref([]);
+    let leagues = ref([]);
+    let teams = ref([]);
 
     onBeforeMount(async () => {
       await useFavouritesService.getFavourites();
     });
 
-    onMounted(async () => {
+    watch(favourites, async (newValue) => {
+      if (!newValue) {
+        return;
+      }
+
+      let game, league, team;
+      const tabGames = [];
+      const tabLeagues = [];
+      const tabTeams = [];
+
       for (let i = 0; i < favourites.value.games.length; i++) {
         await useGameService.getGameById(favourites.value.games[i]);
         game = computed(() => useGameService.game);
-        games.push(game.value);
+        tabGames.push(game.value);
       }
 
       for (let i = 0; i < favourites.value.leagues.length; i++) {
         await useLeaguesService.getLeagueById(favourites.value.leagues[i]);
         league = computed(() => useLeaguesService.league);
-        leagues.push(league.value);
+        tabLeagues.push(league.value);
       }
 
       for (let i = 0; i < favourites.value.teams.length; i++) {
         await useTeamsService.getTeamById(favourites.value.teams[i]);
         team = computed(() => useTeamsService.team);
-        teams.push(team.value);
+        tabTeams.push(team.value);
       }
+
+      games.value = tabGames;
+      leagues.value = tabLeagues;
+      teams.value = tabTeams;
     });
 
     return {

@@ -14,7 +14,7 @@
 <script>
 import CommentsComponent from '@/components/Comments/CommentsComponent.vue';
 import GameWidget from '@/widgets/Game/GameWidget.vue';
-import { onBeforeMount, onMounted } from 'vue';
+import { onBeforeMount } from 'vue';
 import { useRoute } from 'vue-router';
 import { useAuth, useFavourites } from '@/store';
 
@@ -30,47 +30,52 @@ export default {
       await useFavouritesService.getFavourites();
     });
 
-    setTimeout(
-      onMounted(async () => {
-        const fav = document.querySelector('.game__favourites');
-        const favourites = useFavouritesService.favourites;
-        games = favourites.games;
-        if (useAuthService.userIsAuthorized) {
-          let isFav;
+    const handleFavourites = async () => {
+      const fav = document.querySelector('.game__favourites');
+      const favourites = useFavouritesService.favourites;
+      games = favourites.games;
+      if (useAuthService.userIsAuthorized) {
+        let isFav;
 
-          const setStar = () => {
-            fav.setAttribute('src', require('@/assets/icons/star_fill.png'));
-            fav.style = 'max-height: 7.2rem';
-            isFav = true;
-          };
+        const setStar = () => {
+          fav.setAttribute('src', require('@/assets/icons/star_fill.png'));
+          fav.style = 'max-height: 7.2rem';
+          isFav = true;
+        };
 
-          const unsetStar = () => {
-            fav.setAttribute('src', require('@/assets/icons/star.png'));
-            fav.style = 'max-height: 7.2rem';
-            isFav = false;
-          };
+        const unsetStar = () => {
+          fav.setAttribute('src', require('@/assets/icons/star.png'));
+          fav.style = 'max-height: 7.2rem';
+          isFav = false;
+        };
 
-          setTimeout(() => {
-            if (games.includes(route.params.id)) {
-              setStar();
-            } else {
-              unsetStar();
-            }
-          }, 1000);
+        setTimeout(() => {
+          if (games.includes(route.params.id)) {
+            setStar();
+          } else {
+            unsetStar();
+          }
+        }, 1000);
 
-          fav.onclick = function () {
-            if (isFav) {
-              useFavouritesService.deleteGame(route.params.id);
-              unsetStar();
-            } else {
-              useFavouritesService.addGame(route.params.id);
-              setStar();
-            }
-          };
-        }
-      }),
-      1000
-    );
+        fav.onclick = function () {
+          if (isFav) {
+            useFavouritesService.deleteGame(route.params.id);
+            unsetStar();
+          } else {
+            useFavouritesService.addGame(route.params.id);
+            setStar();
+          }
+        };
+      }
+    };
+
+    const timerFavourites = setInterval(() => {
+      const game = document.querySelectorAll('.wg-api-football-game');
+      if (game) {
+        handleFavourites();
+        clearInterval(timerFavourites);
+      }
+    }, 100);
 
     return {
       gameId,

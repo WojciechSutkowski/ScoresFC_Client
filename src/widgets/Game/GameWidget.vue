@@ -5,7 +5,7 @@
     :data-key="key"
     data-id=""
     data-theme="light"
-    data-refresh="1500"
+    data-refresh="15"
     data-show-errors="false"
     data-show-logos="true"
   ></div>

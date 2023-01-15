@@ -68,7 +68,7 @@
 </template>
 
 <script>
-import { onBeforeMount, onUpdated, computed } from 'vue';
+import { onBeforeMount, computed } from 'vue';
 import router from '@/router';
 import { useRoute } from 'vue-router';
 import { useAuth, useFavourites, useLeagues } from '@/store';
@@ -78,9 +78,8 @@ export default {
     const useAuthService = useAuth();
     const useFavouritesService = useFavourites();
     const useLeagueService = useLeagues();
-    let league;
 
-    league = computed(() => useLeagueService.league);
+    const league = computed(() => useLeagueService.league);
 
     onBeforeMount(async () => {
       await useFavouritesService.getFavourites();
@@ -147,45 +146,51 @@ export default {
       });
     };
 
-    setTimeout(
-      onUpdated(async () => {
-        const fav = document.querySelector('.league__favourites__star');
-        const favourites = useFavouritesService.favourites;
-        const leagues = favourites.leagues;
-        if (useAuthService.userIsAuthorized) {
-          let isFav;
+    const handleFavourites = async () => {
+      const fav = document.querySelector('.league__favourites__star');
 
-          const setStar = () => {
-            fav.setAttribute('src', require('@/assets/icons/star_fill.png'));
-            fav.style = 'max-height: 7.2rem';
-            isFav = true;
-          };
+      const favourites = useFavouritesService.favourites;
+      const leagues = favourites.leagues;
+      if (useAuthService.userIsAuthorized) {
+        let isFav;
 
-          const unsetStar = () => {
-            fav.setAttribute('src', require('@/assets/icons/star.png'));
-            fav.style = 'max-height: 7.2rem';
-            isFav = false;
-          };
+        const setStar = () => {
+          fav.setAttribute('src', require('@/assets/icons/star_fill.png'));
+          fav.style = 'max-height: 7.2rem';
+          isFav = true;
+        };
 
-          if (leagues.includes(route.params.id)) {
-            setStar();
-          } else {
-            unsetStar();
-          }
+        const unsetStar = () => {
+          fav.setAttribute('src', require('@/assets/icons/star.png'));
+          fav.style = 'max-height: 7.2rem';
+          isFav = false;
+        };
 
-          fav.onclick = function () {
-            if (isFav) {
-              useFavouritesService.deleteLeague(route.params.id);
-              unsetStar();
-            } else {
-              useFavouritesService.addLeague(route.params.id);
-              setStar();
-            }
-          };
+        if (leagues.includes(route.params.id)) {
+          setStar();
+        } else {
+          unsetStar();
         }
-      }),
-      1000
-    );
+
+        fav.onclick = function () {
+          if (isFav) {
+            useFavouritesService.deleteLeague(route.params.id);
+            unsetStar();
+          } else {
+            useFavouritesService.addLeague(route.params.id);
+            setStar();
+          }
+        };
+      }
+    };
+
+    const timerFavourites = setInterval(() => {
+      console.log(league);
+      if (league.value) {
+        handleFavourites();
+        clearInterval(timerFavourites);
+      }
+    }, 1000);
 
     return {
       route,

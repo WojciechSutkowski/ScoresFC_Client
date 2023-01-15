@@ -48,7 +48,7 @@
 <script>
 import LastGamesComponent from '@/components/Games/Last/LastGamesComponent.vue';
 import NextGamesComponent from '@/components/Games/Next/NextGamesComponent.vue';
-import { onBeforeMount, onMounted, computed } from 'vue';
+import { onBeforeMount, computed } from 'vue';
 import router from '@/router';
 import { useRoute } from 'vue-router';
 import { useAuth, useFavourites, useTeams } from '@/store';
@@ -66,47 +66,50 @@ export default {
       await useTeamsService.getTeamById(route.params.id);
     });
 
-    setTimeout(
-      onMounted(async () => {
-        const fav = document.querySelector('.team__header__star');
+    const handleFavourites = async () => {
+      const fav = document.querySelector('.team__header__star');
 
-        const favourites = useFavouritesService.favourites;
-        const teams = favourites.teams;
-        console.log(teams);
-        if (useAuthService.userIsAuthorized) {
-          let isFav;
+      const favourites = useFavouritesService.favourites;
+      const teams = favourites.teams;
+      if (useAuthService.userIsAuthorized) {
+        let isFav;
 
-          const setStar = () => {
-            fav.setAttribute('src', require('@/assets/icons/star_fill.png'));
-            fav.style = 'max-height: 7.2rem';
-            isFav = true;
-          };
+        const setStar = () => {
+          fav.setAttribute('src', require('@/assets/icons/star_fill.png'));
+          fav.style = 'max-height: 7.2rem';
+          isFav = true;
+        };
 
-          const unsetStar = () => {
-            fav.setAttribute('src', require('@/assets/icons/star.png'));
-            fav.style = 'max-height: 7.2rem';
-            isFav = false;
-          };
+        const unsetStar = () => {
+          fav.setAttribute('src', require('@/assets/icons/star.png'));
+          fav.style = 'max-height: 7.2rem';
+          isFav = false;
+        };
 
-          if (teams.includes(route.params.id)) {
-            setStar();
-          } else {
-            unsetStar();
-          }
-
-          fav.onclick = function () {
-            if (isFav) {
-              useFavouritesService.deleteTeam(route.params.id);
-              unsetStar();
-            } else {
-              useFavouritesService.addTeam(route.params.id);
-              setStar();
-            }
-          };
+        if (teams.includes(route.params.id)) {
+          setStar();
+        } else {
+          unsetStar();
         }
-      }),
-      1000
-    );
+
+        fav.onclick = function () {
+          if (isFav) {
+            useFavouritesService.deleteTeam(route.params.id);
+            unsetStar();
+          } else {
+            useFavouritesService.addTeam(route.params.id);
+            setStar();
+          }
+        };
+      }
+    };
+
+    const timerFavourites = setInterval(() => {
+      if (team.value) {
+        handleFavourites();
+        clearInterval(timerFavourites);
+      }
+    }, 100);
 
     const goToSquadPage = () => {
       const params = {
@@ -134,7 +137,12 @@ export default {
       });
     };
 
-    return { team, useAuthService, goToSquadPage, goToTeamGamesPage };
+    return {
+      team,
+      useAuthService,
+      goToSquadPage,
+      goToTeamGamesPage,
+    };
   },
   components: { LastGamesComponent, NextGamesComponent },
 };

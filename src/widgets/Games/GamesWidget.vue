@@ -7,18 +7,19 @@
     data-league=""
     data-season=""
     data-theme="light"
-    data-refresh="600"
+    data-refresh="15"
     data-show-toolbar="false"
     data-show-errors="false"
     data-show-logos="true"
     data-modal-game="true"
     data-modal-standings="true"
     data-modal-show-logos="true"
+    ref="widget"
   ></div>
 </template>
 
 <script>
-import { ref, onMounted } from 'vue';
+import { ref, onBeforeMount, computed } from 'vue';
 import router from '@/router';
 import { useAuth, useFavourites } from '@/store';
 import { useToast } from 'vue-toastification';
@@ -28,11 +29,24 @@ export default {
     const useAuthService = useAuth();
     const useFavouritesService = useFavourites();
     const toast = useToast();
+    const widget = ref(null);
 
-    setTimeout(
-      onMounted(async () => {
-        const rows = document.querySelectorAll('tr');
+    const isUserAuthorized = computed(() => useAuthService.userIsAuthorized);
 
+    onBeforeMount(async () => {
+      useFavouritesService.getFavourites();
+    });
+
+    const handleFavourites = async () => {
+      const rows = document.querySelectorAll('tr');
+
+      rows.forEach(function (el) {
+        if (el.id.startsWith('football-game')) {
+          goToMatchPage(el);
+        }
+      });
+
+      if (isUserAuthorized.value) {
         const favourites = useFavouritesService.favourites;
         const { games, leagues } = favourites;
 
@@ -43,78 +57,72 @@ export default {
         });
 
         rows.forEach(function (el) {
-          if (el.id.startsWith('football-game')) {
-            goToMatchPage(el);
+          // Add button to every table row
+          const btn = document.createElement('td');
+          const star = document.createElement('img');
+          btn.setAttribute('width', '24px');
+          btn.setAttribute('style', 'background-color: #fff; border-bottom: 0');
+          btn.appendChild(star);
+
+          let isFav;
+
+          const setStar = (star) => {
+            star.setAttribute('src', require('@/assets/icons/star_fill.png'));
+            star.style = 'width: 2.4rem';
+            isFav = true;
+          };
+
+          const unsetStar = (star) => {
+            star.setAttribute('src', require('@/assets/icons/star.png'));
+            star.style = 'width: 2.4rem';
+            isFav = false;
+          };
+
+          if (leagues.includes(el.id.slice(16))) {
+            moveRows(el.id);
           }
-        });
 
-        if (useAuthService.userIsAuthorized) {
-          useFavouritesService.getFavourites();
+          if (
+            leagues.includes(el.id.slice(16)) ||
+            games.includes(el.id.slice(14))
+          ) {
+            setStar(star);
+          } else {
+            unsetStar(star);
+          }
 
-          rows.forEach(function (el) {
-            // Add button to every table row
-            const btn = document.createElement('td');
-            const star = document.createElement('img');
-            btn.setAttribute('width', '24px');
-            btn.setAttribute(
-              'style',
-              'background-color: #fff; border-bottom: 0'
-            );
-            btn.appendChild(star);
-
-            let isFav;
-
-            const setStar = (star) => {
-              star.setAttribute('src', require('@/assets/icons/star_fill.png'));
-              star.style = 'width: 2.4rem';
-              isFav = true;
-            };
-
-            const unsetStar = (star) => {
-              star.setAttribute('src', require('@/assets/icons/star.png'));
-              star.style = 'width: 2.4rem';
-              isFav = false;
-            };
-
-            if (leagues.includes(el.id.slice(16))) {
-              moveRows(el.id);
-            }
-
-            if (
-              leagues.includes(el.id.slice(16)) ||
-              games.includes(el.id.slice(14))
-            ) {
-              setStar(star);
-            } else {
-              unsetStar(star);
-            }
-
-            btn.onclick = function () {
-              if (el.id.startsWith('football-league')) {
-                if (isFav) {
-                  useFavouritesService.deleteLeague(el.id.slice(16));
-                  unsetStar(star);
-                } else {
-                  useFavouritesService.addLeague(el.id.slice(16));
-                  setStar(star);
-                  moveRows(el.id);
-                }
-              } else if (el.id.startsWith('football-game')) {
-                if (isFav) {
-                  useFavouritesService.deleteGame(el.id.slice(14));
-                  unsetStar(star);
-                } else {
-                  useFavouritesService.addGame(el.id.slice(14));
-                  setStar(star);
-                }
+          btn.onclick = function () {
+            if (el.id.startsWith('football-league')) {
+              if (isFav) {
+                useFavouritesService.deleteLeague(el.id.slice(16));
+                unsetStar(star);
+              } else {
+                useFavouritesService.addLeague(el.id.slice(16));
+                setStar(star);
+                moveRows(el.id);
               }
-            };
-            el.insertBefore(btn, el.firstChild);
-          });
-        }
-      }),
-      1000
-    );
+            } else if (el.id.startsWith('football-game')) {
+              if (isFav) {
+                useFavouritesService.deleteGame(el.id.slice(14));
+                unsetStar(star);
+              } else {
+                useFavouritesService.addGame(el.id.slice(14));
+                setStar(star);
+              }
+            }
+          };
+          el.insertBefore(btn, el.firstChild);
+        });
+      }
+    };
+
+    const timerFavourites = setInterval(() => {
+      const rows = document.querySelectorAll('tr');
+      if (rows.length) {
+        handleFavourites();
+        clearInterval(timerFavourites);
+      }
+    }, 100);
 
     const moveRows = (leagueId) => {
       const rows = document.querySelector('table').rows,
@@ -138,7 +146,6 @@ export default {
         cells.forEach(function (el) {
           el.style.cursor = 'pointer';
           el.addEventListener('click', () => {
-            console.log(row.id);
             router.push({
               name: 'Match details',
               params: { id: `${row.id.slice(14)}` },
@@ -156,6 +163,9 @@ export default {
     return {
       key,
       toast,
+      widget,
+      handleFavourites,
+      isUserAuthorized,
     };
   },
 };
