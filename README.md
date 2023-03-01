@@ -23,4 +23,4 @@ Aplikacja wykorzystuje dane dostarczane przez [API-Football](https://www.api-foo
 Została sporządzona dokumentacja API, dostępna tutaj: [dokumentacja Swagger](https://app.swaggerhub.com/apis-docs/WojciechSutkowski/ScoresFC/1.0.0)
 
 ### Repozytorium części serwerowej
-[ScoresFC_Server]([https://github.com/WojciechSutkowski/ScoresFC_Client](https://github.com/WojciechSutkowski/ScoresFC_Server))
+[ScoresFC_Server]([https://github.com/WojciechSutkowski/ScoresFC_Client](https://github.com/WojciechSutkowski/ScoresFC_Server)
