@@ -2,24 +2,51 @@
 
 Aplikacja została stworzona w ramach pracy inżynierskiej.
 
-## Temat pracy
+#### Temat pracy
 
-**Projekt i implementacja aplikacji internetowej do wspomagania wyświetlania wyników sportowych na żywo**
+Projekt i implementacja aplikacji internetowej do wspomagania wyświetlania wyników sportowych na żywo
 
 ---
 
-### Cel pracy
-
-Celem pracy było zaprojektowanie i zaimplementowanie aplikacji internetowej pozwalającej użytkownikowi na śledzenie wyników meczów piłkarskich na żywo, statystyk oraz innych danych ze świata piłki nożnej. Grupa docelowa została zawężona z uwagi na to że najpopularniejsze aplikacje tego typu oferują zazwyczaj dane z wielu różnych sportów, co wprowadza większe skomplikowanie obsługi dla użytkowników. Aplikacja ScoresFC obsługuje wyłącznie dane piłkarskie z uwagi na największą popularność tego sportu, będąc aplikacją jasną i przejrzystą w obsłudze, łącząc przy tym najlepsze cechy znanych graczy na rynku. Aplikacja jest również przyjazna osobom walczącym z nałogiem hazardu, gdyż w odróżnieniu od konkurencji nie wyświetla reklam oraz kursów bukmacherskich, za to posiada odnośnik do strony Polskiego Towarzystwa Psychologicznego, gdzie osoby uzależnione mogą znaleźć pomoc w walce z nałogiem.
-
 ### Wykorzystane technologie
 
-- Node.js + Express.js (serwer aplikacji)
-- Vue.js + Sass (część kliencka aplikacji)
+- Node.js + Express.js (serwer)
+- Vue.js + Sass (klient)
 - MongoDB (baza danych)
-- Jest (testy jednostkowe)
-- Cypress (testy E2E)
+- Jest + Cypress (testy)
 
-### Wymagania
+---
 
-Klient aplikacji ScoresFC ma za zadanie główne wyświetlanie danych pobieranych z serwera (dla wszystkich rodzajów użytkowników), a także obsługę jego pozostałych funkcjonalności (możliwość rejestracji i logowania, dodawania komentarzy do meczów, panel administratora do zarządzania komentarzami). Klient bezposrednio łączy się też z API-Football, obsługując udostępniane przez to API [**widgety**](https://www.api-football.com/widgets).
+#### API-Football
+
+Aplikacja wykorzystuje dane dostarczane przez [API-Football](https://www.api-football.com/).
+
+### Dokumentacja API
+
+Została sporządzona dokumentacja API, dostępna tutaj: [dokumentacja Swagger](https://app.swaggerhub.com/apis-docs/WojciechSutkowski/ScoresFC/1.0.0)
+
+### Interfejsy
+
+<img src="/readme/1.png"
+width="45%" hspace="10" vspace="10">
+<img src="/readme/2.png"
+width="45%" hspace="10" vspace="10">
+
+<img src="/readme/3.png"
+width="45%" hspace="10" vspace="10">
+<img src="/readme/4.png"
+width="45%" hspace="10" vspace="10">
+
+<img src="/readme/5.png"
+width="45%" hspace="10" vspace="10">
+<img src="/readme/6.png"
+width="45%" hspace="10" vspace="10">
+
+<img src="/readme/7.png"
+width="45%" hspace="10" vspace="10">
+<img src="/readme/8.png"
+width="45%" hspace="10" vspace="10">
+
+### Repozytorium części serwerowej
+
+[ScoresFC_Server](https://github.com/WojciechSutkowski/ScoresFC_Server)
